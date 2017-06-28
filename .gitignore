@@ -100,3 +100,21 @@ ENV/
 
 db.sqlite3
 server/db.sqlite3
+.DS_Store
+*.csv
+*.pyc
+*.swp
+*.egg-info
+build
+dist
+.coverage
+nosetests.xml
+lettucetests.xml
+coverage.xml
+ghostdriver.log
+.harvest
+pep8.report
+.env
+*.sqlite
+node_modules
+.vagrant
