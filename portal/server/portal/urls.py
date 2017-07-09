@@ -21,6 +21,10 @@ from . import views
 admin.autodiscover()
 router = routers.DefaultRouter()
 router.register(r'accounts', views.UserView, 'list')
+router.register(r'tracks', viewset=views.TrackView)
+router.register(r'tags', viewset=views.TagView)
+router.register(r'questions', viewset=views.QuestionView)
+router.register(r'quizes', viewset=views.QuizView)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),

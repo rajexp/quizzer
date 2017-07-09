@@ -6,7 +6,10 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 class Tag(models.Model):
-    name = models.CharField(max_length = 50)
+    name = models.CharField(max_length = 50, null=False, unique=True)
+
+    def __str__(self):
+        return self.name
 
 # class Option(object):
 #     def _init__(self, first=None, second=None, third=None, forth=None, answer=None):
@@ -28,11 +31,17 @@ class Question(models.Model):
     tag = models.ManyToManyField(Tag)
     created_on  = models.DateTimeField(default= timezone.now)
 
+    def __str__(self):
+        return self.question
+
 class Track(models.Model):
-    name = models.CharField(max_length=50, null=False)
+    name = models.CharField(max_length=50, null=False, unique=True)
+
+    def __str__(self):
+        return self.name
 
 class Quiz(models.Model):
-    title = models.TextField(blank=True, )
+    title = models.TextField(blank=True,null=False )
     track = models.OneToOneField(Track)
     tag = models.ManyToManyField(Tag)
     description = models.TextField(blank=True, )
@@ -40,6 +49,9 @@ class Quiz(models.Model):
     time = models.IntegerField(validators=[MinValueValidator(0)])
     created_on  = models.DateTimeField(editable=False)
     modified_on = models.DateTimeField()
+
+    class Meta:
+        index_together = ['title']
 
     def save(self, *args, **kwargs):
         ''' On save, update timestamps '''
