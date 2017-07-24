@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Track, Tag, Question, Quiz
+from .models import Question, Quiz, Track, Tag, UserProfile, UserTrack, UserQuizRecord
 
 @admin.register(Track)
 class TrackAdmin(admin.ModelAdmin):
@@ -11,8 +11,31 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    fields = ('question', 'opt_first', 'opt_second', 'opt_third', 'opt_forth', 'answer', 'tag')
+    fields = ('question', 'question_image', 'option', 'description', 'answer', 'tag')
+    list_display = ('question', 'option', 'description', 'answer','created_on')
+    empty_value_display = '-empty-'
 
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
-    fields = ('title', 'track', 'tag', 'description', 'question', 'time', 'created_on')
+    fields = ('title', 'track', 'tag', 'description', 'question', 'time')
+    list_display = ('title', 'track', 'description', 'time', 'created_on')
+    empty_value_display = '-empty-'
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    fields = ('user', 'photo', 'bio', 'state', 'college', 'passout', 'birth_date')
+    list_display = ('user', 'photo', 'bio', 'state', 'college', 'passout', 'birth_date')
+    empty_value_display = '-empty-'
+
+@admin.register(UserTrack)
+class UserTrackAdmin(admin.ModelAdmin):
+    fields = ('user', 'tracks')
+    empty_value_display = '-empty-'
+
+@admin.register(UserQuizRecord)
+class UserQuizRecordAdmin(admin.ModelAdmin):
+    fields = ('user', 'quiz', 'score')
+    list_display = ('user', 'quiz', 'score')
+    empty_value_display = '-empty-'
+
+    

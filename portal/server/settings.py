@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'portal',
     'allauth',
     'django.contrib.sites',
@@ -66,7 +67,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'portal','templates'), #, 'plain', 'example'
+            os.path.join(BASE_DIR,'server', 'portal','templates'),
+            os.path.join(BASE_DIR,'server', 'portal','templates','allauth'), #, 'plain', 'example'
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -89,7 +91,12 @@ AUTHENTICATION_BACKENDS = (
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 )
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
 WSGI_APPLICATION = 'portal.wsgi.application'
 
 
@@ -98,8 +105,12 @@ WSGI_APPLICATION = 'portal.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'quizdb',
+        'USER': 'makov',
+        # 'PASSWORD': 'mypassword',
+        'HOST': '',
+        'PORT': '5432',
     }
 }
 
@@ -121,6 +132,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+ACCOUNT_ADAPTER = 'portal.allauthsetting.AccountAdapter'
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 

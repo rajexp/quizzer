@@ -1,7 +1,18 @@
-{% extends "base.html" %}
-
-{% block content %}
-<h1>Profile</h1>
-
-<p>Your profile</p>
-{% endblock %}
+{% extends "./base.html" %}
+    {% block content %}
+    <div class="container">
+        <table class="table">
+            <thead><tr><th colspan="2">Profile Details</th></tr></thead>
+            <tbody>
+                <tr><td>Name</td><td>{{ user.first_name }}&nbsp;{{ user.last_name}}</td></tr>
+                <tr><td>Username</td><td>{{ user.username }}</td></tr>
+                <tr><td>Email</td><td>{{ user.email }}</td></tr>
+                <tr><td>Birth</td><td>{{ user.profile.birth_date }}</td></tr>
+                <tr><td>Bio</td><td>{{ user.profile.bio }}</td></tr>
+                <tr><td>State</td><td>{{ user.profile.state }}</td></tr>
+                <tr><td>College</td><td>{{ user.profile.college }}</td></tr>
+                <tr><td>Passout</td><td>{{ user.profile.passout }}</td></tr>
+            </tbody>
+        </table>
+    </div>
+    {% endblock %}

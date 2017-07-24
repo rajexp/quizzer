@@ -18,15 +18,24 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from rest_framework import routers
 from . import views
+from rest_framework.authtoken import views as rviews
 admin.autodiscover()
 router = routers.DefaultRouter()
 router.register(r'accounts', views.UserView, 'list')
 router.register(r'tracks', viewset=views.TrackView)
 router.register(r'tags', viewset=views.TagView)
 router.register(r'questions', viewset=views.QuestionView)
-router.register(r'quizes', viewset=views.QuizView)
+router.register(r'quizzes', viewset=views.QuizView)
+router.register(r'users', viewset=views.UserView)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^api/', include(router.urls)),
+    url(r'^profile/',views.profile, name='profile'),
+    url(r'^quiz/',views.quiz,name="quiz"),
+    url(r'^about/',views.about,name="about"),
+]
+   
+urlpatterns += [
+    url(r'^api-token-auth/', rviews.obtain_auth_token)
 ]

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Track, Tag, Question, Quiz
+from .models import Track, Tag, Question, Quiz, UserQuizRecord
  
  
 class UserSerializer(serializers.ModelSerializer):
@@ -59,7 +59,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('id', 'question', 'question_image', 'opt_first', 'opt_second', 'opt_third', 'opt_forth', 'answer', 'description', 'tag')
+        fields = ('id', 'question', 'question_image', 'option', 'answer', 'description', 'tag')
         read_only_fields = ('id', 'created_on',)
     
     # def create(self, validated_data):
@@ -100,8 +100,8 @@ class QuizSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Quiz
-        fields = ('title','track','tag','description','question','time')
-        read_only_fields = ('created_on','modified_on')
+        fields = ('id','title','track','tag','description','question','time')
+        read_only_fields = ('id','created_on','modified_on')
     
     # def create(self, validated_data):
     #     questions = validated_data.pop('question')
@@ -113,3 +113,9 @@ class QuizSerializer(serializers.ModelSerializer):
     #         question, created = Question.objects.get_or_create(id=question['id'])
     #         recipe.ingredients.add(ingredient)
     #     return recipe
+
+class UserQuizRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserQuizRecord
+        fields = ('user', 'quiz','score')
+        read_only_fields= ('user',)
