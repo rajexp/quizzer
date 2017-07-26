@@ -118,3 +118,6 @@ pep8.report
 *.sqlite
 node_modules
 .vagrant
+
+images/
+media/
