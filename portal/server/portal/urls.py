@@ -27,6 +27,7 @@ router.register(r'tags', viewset=views.TagView)
 router.register(r'questions', viewset=views.QuestionView)
 router.register(r'quizzes', viewset=views.QuizView)
 router.register(r'users', viewset=views.UserView)
+router.register(r'userprofile', viewset=views.UserProfileView)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),

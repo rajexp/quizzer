@@ -48,12 +48,12 @@
             <a class="mdl-navigation__link" href="{% url 'quiz' %}">Take Quiz</a>
             <a class="mdl-navigation__link" href="">Explore</a>
             <a class="mdl-navigation__link" href="{% url 'about' %}">About Us</a>
-            <button id="demo-menu-lower-right" class="mdl-button mdl-js-button mdl-button--icon">
+            <button id="demo-menu-lower-right-large" class="mdl-button mdl-js-button mdl-button--icon">
             <i class="material-icons">more_vert</i>
           </button>
 
           <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
-              for="demo-menu-lower-right">
+              for="demo-menu-lower-right-large">
             {% if user.is_authenticated%}
             <a href="{% url 'profile' %}"><li class="mdl-menu__item"><i class="material-icons">account_circle</i><span class="link">Profile</span></li></a>
             <a href="/accounts/social/connections/"><li class="mdl-menu__item"><i class="material-icons">settings</i><span class="link">Settings</span></li>
@@ -64,14 +64,31 @@
             
           </ul>
           </nav>
+          <nav class="mdl-navigation mdl-layout--small-screen-only">
+            <button id="demo-menu-lower-right-small" class="mdl-button mdl-js-button mdl-button--icon">
+              <i class="material-icons">more_vert</i>
+            </button>
+
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                for="demo-menu-lower-right-small">
+              {% if user.is_authenticated%}
+              <a href="{% url 'profile' %}"><li class="mdl-menu__item"><i class="material-icons">account_circle</i><span class="link">Profile</span></li></a>
+              <a href="/accounts/social/connections/"><li class="mdl-menu__item"><i class="material-icons">settings</i><span class="link">Settings</span></li>
+              <a href="/accounts/logout/"><li class="mdl-menu__item"><span class="link">Logout</span></li></a>
+              {% else %}
+              <a href="/accounts/login/"><li class="mdl-menu__item"><i class="material-icons">account_circle</i><span class="link">Login</span></li></a>
+              {% endif %}
+              
+            </ul>
+          </nav>
         </div>
       </header>
       <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Quizzers</span>
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
+          <a class="mdl-navigation__link" href="{% url 'quiz' %}">Take Quiz</a>
+          <a class="mdl-navigation__link" href="">Explore</a>
+          <a class="mdl-navigation__link" href="{% url 'about' %}">About Us</a>
         </nav>
       </div>
       <main class="mdl-layout__content">

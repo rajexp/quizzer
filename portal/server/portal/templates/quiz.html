@@ -101,12 +101,12 @@
             console.log(quiz.question[currentquestion]['option'][choice]);
             console.log(quiz.question[currentquestion]['answer']);
             if(Number(choice)+1 == quiz.question[currentquestion]['answer']){
-                $('.choice').eq(choice).css({'background-color':'#50D943'});
+                $('.choice').eq(choice).css({'background-color':'green'});
                 $('#explanation').html('<strong>Correct!</strong> ' + htmlEncode(quiz.question[currentquestion]['description']));
                 score++;
             } else {
-                $('.choice').eq(choice).css({'background-color':'#D92623'});
-                 $('.choice').eq(quiz.question[currentquestion]['answer']-1).css({'background-color':'#50D943'});
+                $('.choice').eq(choice).css({'background-color':'green'});
+                 $('.choice').eq(quiz.question[currentquestion]['answer']-1).css({'background-color':'#c62828'});
                 $('#explanation').html('<strong>Incorrect.</strong> ' + htmlEncode(quiz.question[currentquestion]['description']));
             }
             currentquestion++;
@@ -192,7 +192,7 @@
                 addOptions(quiz.question[0]['option']);
             
                 //add submit button
-                $(document.createElement('button')).addClass('mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect').attr('id', 'submitbutton').text('Check Answer').appendTo('#action');
+                $(document.createElement('button')).addClass('mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect').attr('id', 'submitbutton').text('Check Answer').appendTo('#action');
             
                 setupButtons();
             }

@@ -7,7 +7,7 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from .permissions import IsStaffOrTargetUser, IsAdminOrIsSelf
 from .serializers import TrackSerializer, TagSerializer, QuizSerializer, \
-QuestionSerializer, UserSerializer, UserQuizRecordSerializer
+QuestionSerializer, UserSerializer, UserProfileSerializer, UserQuizRecordSerializer
 from .models import Track, Tag, Question, Quiz, UserProfile, UserQuizRecord
 from django.conf import settings
 from django.db.models.signals import post_save
@@ -42,6 +42,23 @@ class UserView(viewsets.ModelViewSet):
         # allow non-authenticated user to create via POST
         return (AllowAny() if self.request.method =='POST'
                 else IsStaffOrTargetUser()),
+
+class UserProfileView(viewsets.ModelViewSet):
+    serializer_class = UserProfileSerializer
+    model = User
+    queryset = User.objects.all()
+ 
+    def get_permissions(self):
+        # allow non-authenticated user to create via POST
+        return (AllowAny() if self.request.method =='POST'
+                else IsStaffOrTargetUser()),
+    
+    @list_route(methods=['get'], permission_classes=[IsAuthenticated], url_path='myprofile')
+    def myprofile(self, request):
+        profile = UserProfile.objects.get(user=request.user)
+        serializer = UserProfileSerializer(profile)
+        print(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
 
 class TrackView(viewsets.ModelViewSet):

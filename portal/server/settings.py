@@ -37,11 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework',
     'rest_framework.authtoken',
     'portal',
     'allauth',
-    'django.contrib.sites',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
@@ -165,3 +165,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR,'server','media')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'server'),
+]
+STATICFILES_FINDERS = ( 
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)

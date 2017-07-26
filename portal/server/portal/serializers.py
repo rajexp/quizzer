@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Track, Tag, Question, Quiz, UserQuizRecord
+from .models import Track, Tag, Question, Quiz, UserProfile, UserQuizRecord
  
  
 class UserSerializer(serializers.ModelSerializer):
@@ -27,6 +27,12 @@ class UserSerializer(serializers.ModelSerializer):
         instance.set_password(validated_data.get('password',instance.password))
         instance.save()
         return instance
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ('user','photo','bio','birth_date','state','college','passout')
+        read_only_fields = ('user',)
 
 class TrackSerializer(serializers.ModelSerializer):
     class Meta:
@@ -61,14 +67,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = ('id', 'question', 'question_image', 'option', 'answer', 'description', 'tag')
         read_only_fields = ('id', 'created_on',)
-    
-    # def create(self, validated_data):
-    #     tags = validated_data.pop('tag')
-    #     question = Question.objects.create(**validated_data)
-    #     for tag in tags:
-    #         tag, created = Tag.objects.get_or_create(name=tag['name'])
-    #         question.tag.add(tag)
-    #     return question
 
 class QuizSerializer(serializers.ModelSerializer):
     def to_representation(self, obj):
@@ -102,17 +100,6 @@ class QuizSerializer(serializers.ModelSerializer):
         model = Quiz
         fields = ('id','title','track','tag','description','question','time')
         read_only_fields = ('id','created_on','modified_on')
-    
-    # def create(self, validated_data):
-    #     questions = validated_data.pop('question')
-    #     tags = validated_data.pop('tag')
-    #     tracks = validated_data.pop('track')
-    #     quiz = Quiz.objects.create(**validated_data)
-
-    #     for question in questions:
-    #         question, created = Question.objects.get_or_create(id=question['id'])
-    #         recipe.ingredients.add(ingredient)
-    #     return recipe
 
 class UserQuizRecordSerializer(serializers.ModelSerializer):
     class Meta:
