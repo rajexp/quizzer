@@ -1,14 +1,17 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render
+from django.http import JsonResponse
 from django.db.models import Q 
 from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
 from .permissions import IsStaffOrTargetUser, IsAdminOrIsSelf
 from .serializers import TrackSerializer, TagSerializer, QuizSerializer, \
 QuestionSerializer, UserSerializer, UserProfileSerializer, UserQuizRecordSerializer
 from .models import Track, Tag, Question, Quiz, UserProfile, UserQuizRecord
+from allauth.socialaccount.models import SocialAccount
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -24,7 +27,6 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 # @api_view(['GET','POST'])
 def profile(request):
     profile = UserProfile.objects.get(user=request.user)
-    print(profile)
     return render(request,'profile.html',context={'user':request.user,'user.profile':profile})
 
 def quiz(request):
@@ -32,6 +34,10 @@ def quiz(request):
 
 def about(request):
     return render(request,'about.html')
+
+def getsocial(request):
+    fb = SocialAccount.objects.filter(user_id=request.user.id, provider='facebook')
+    return JsonResponse({'fb_uid':fb[0].uid})
 
 class UserView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
@@ -53,7 +59,7 @@ class UserProfileView(viewsets.ModelViewSet):
         return (AllowAny() if self.request.method =='POST'
                 else IsStaffOrTargetUser()),
     
-    @list_route(methods=['get'], permission_classes=[IsAuthenticated], url_path='myprofile')
+    @list_route(methods=['get'], url_path='myprofile')
     def myprofile(self, request):
         profile = UserProfile.objects.get(user=request.user)
         serializer = UserProfileSerializer(profile)

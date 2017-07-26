@@ -14,7 +14,9 @@
                 document.getElementById("college").innerHTML = (user.profile.college);
                 document.getElementById("state").innerHTML = (user.profile.state)?user.profile.state:'';
                 document.getElementById("passout").innerHTML = (user.profile.passout)?user.profile.passout:'';
-                document.getElementById("title_profile").style.background="url('/static/"+user.profile.photo+"') ";
+                console.log(user.profile.photo);
+                if(user.profile.photo!=null)
+                document.getElementById("title_profile").style.backgroundImage="url('/static"+user.profile.photo+"')";
             }
             $.ajax({
             url:'/api/users/'+String({{ request.user.id }}),
@@ -34,91 +36,112 @@
                 });
             } 
             });
+            $.ajax({
+            url:'/social/link',
+            method:'GET',
+            dataType:'json',
+            success:function(data){
+                if(document.getElementById("title_profile").style.backgroundImage==null | document.getElementById("title_profile").style.backgroundImage==""){
+                    document.getElementById("title_profile").style.backgroundImage="url('http://graph.facebook.com/"+data.fb_uid+"/picture?width=250&height=250')";
+                }
+                document.getElementById("social_link").href="https://www.facebook.com/"+data.fb_uid;
+            } 
+            });
         });
     </script>
     <style>
-.demo-card-wide.mdl-card {
-  width: 100%;
-}
-.demo-card-wide > .mdl-card__title {
-  color: #fff;
-  height: 200px;
-}
-.demo-card-wide > .mdl-card__menu {
-  color: #fff;
-}
-title_name{
-    font-size: 10px;
-    padding:0px;
-}
-.mdl-card__title{
-    background-size: cover;
-}
-</style>
+        .demo-card-wide.mdl-card {
+        width: 100%;
+        }
+        .demo-card-wide > .mdl-card__title {
+        color: #fff;
+        background-color: black;
+        height: 250px;
+        min-width:100%;
+        background-repeat: no-repeat;
+        background-position: left-top; 
+        }
+        .demo-card-wide > .mdl-card__menu {
+        color: #fff;
+        }
+        .profile-overlay{
+            position: relative;
+            margin-top:200px;
+        }
+    </style>
     {% endblock %}
     {% block content %}
     <p></p>
     <div class="container">
-        <div class="demo-card-wide mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title" id="title_profile">
-                <p  class="mdl-card__title-text" id="bio"></p>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                    <div class="mdl-card__title" id="title_profile">
+                        <ul class="profile-overlay mdl-list">
+                            <li>
+                                <h5 class="mdl-card__title-text">{{ user.first_name }} {{user.last_name}}</h5>
+                            </li>
+                            <li>
+                            <p  id="bio"></p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        <ul class="demo-list-item mdl-list">
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                Name
+                                </span>
+                                <span class="mdl-list__item-primary-content" id="name"></span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                Username
+                                </span>
+                                <span class="mdl-list__item-primary-content" id="username"></span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                Email
+                                </span>
+                                <span class="mdl-list__item-primary-content" id="email"></span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                Birthday
+                                </span>
+                                <span class="mdl-list__item-primary-content" id="birth"></span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                Passout
+                                </span>
+                                <span class="mdl-list__item-primary-content" id="passout"></span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                College
+                                </span>
+                                <span class="mdl-list__item-primary-content" id="college"></span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                State
+                                </span>
+                                <span class="mdl-list__item-primary-content" id="state"></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                    </div>
+                    <div class="mdl-card__menu">
+                    <a id="social_link" href="" target="_blank"><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                        <i class="material-icons">share</i>
+                    </button></a>
+                    </div>
+                </div>
             </div>
-            <div class="mdl-card__supporting-text">
-                <ul class="demo-list-item mdl-list">
-                    <li class="mdl-list__item">
-                        <span class="mdl-list__item-primary-content">
-                        Name
-                        </span>
-                        <span class="mdl-list__item-primary-content" id="name"></span>
-                    </li>
-                    <li class="mdl-list__item">
-                        <span class="mdl-list__item-primary-content">
-                        Username
-                        </span>
-                        <span class="mdl-list__item-primary-content" id="username"></span>
-                    </li>
-                    <li class="mdl-list__item">
-                        <span class="mdl-list__item-primary-content">
-                        Email
-                        </span>
-                        <span class="mdl-list__item-primary-content" id="email"></span>
-                    </li>
-                    <li class="mdl-list__item">
-                        <span class="mdl-list__item-primary-content">
-                        Birthday
-                        </span>
-                        <span class="mdl-list__item-primary-content" id="birth"></span>
-                    </li>
-                    <li class="mdl-list__item">
-                        <span class="mdl-list__item-primary-content">
-                        Passout
-                        </span>
-                        <span class="mdl-list__item-primary-content" id="passout"></span>
-                    </li>
-                    <li class="mdl-list__item">
-                        <span class="mdl-list__item-primary-content">
-                        College
-                        </span>
-                        <span class="mdl-list__item-primary-content" id="college"></span>
-                    </li>
-                    <li class="mdl-list__item">
-                        <span class="mdl-list__item-primary-content">
-                        State
-                        </span>
-                        <span class="mdl-list__item-primary-content" id="state"></span>
-                    </li>
-                </ul>
-            </div>
-            <div class="mdl-card__actions mdl-card--border">
-            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                Get Started
-            </a>
-            </div>
-            <div class="mdl-card__menu">
-            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                <i class="material-icons">share</i>
-            </button>
-            </div>
+            <div class="col-md-6"></div>
         </div>
         
     </div>
