@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block extra_head %}
+
+    
+    <style type="text/css" media="all">
+        /*css reset */
+        html,body,div,span,p,code,small,strike,strong,sub,sup,b,u,i{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0;} 
+        article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block;} 
+        body{line-height:1; font:normal 0.9em/1em "Helvetica Neue", Helvetica, Arial, sans-serif; width: 100%;} 
+        ol,ul{list-style:none;}
+        strong{font-weight:700;}
+        #wrapper{
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height:100vh;
+        }
+        .track {
+            margin: auto auto;
+            position: relative;
+            width: 80%;
+            height: 100px;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 100px;
+            background-color: rgba(0,0,0,.5);
+            border-radius: 20px;
+        }
+        .track > a {
+            height: 100%;
+            font-size: 1.3em;
+            color:azure;
+        }
+        .track > a:hover {
+            text-decoration: none;
+        }
+
+        .track:hover {
+            background:rgba(0,0,0,.7);
+        }
+        .title {
+            padding-left: 5%;
+            text-align: left;
+            color:royalblue;
+        }
+        .subtitle {
+            padding-left: 5%;
+            text-align: left;
+        }
+        .msg {  
+            font-size: 1.1em;
+            color: #8e9aa9!important;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    {% block content %}    
+    <div class="row">
+        <div class="row">
+            <div class="row title"><h2> Tracks List </h2></div>
+            <div class="row subtitle"><p class="msg">Choose your tracks and take quizzes. Improve and track your performance day by day. Learn more and more with Quizzers.<br><em>Creating best for tommorrow.</em></p></div>
+        </div>
+        <div class="row">
+            <div class="col-md-6" id="wrapper">
+            {% for track in tracks %}
+            <div class="row track"><a href="{% url 'quizlist' track.id %}">{{ track.name }}</a></div>
+            {% endfor %}
+            </div>
+            <div class="col-md-6"></div>
+        </div>
+    </div>
+    {% endblock %}
+
+{% endblock %}

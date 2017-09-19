@@ -30,6 +30,9 @@
       vertical-align: middle;
       line-height: 1;
     }
+    .row{
+      margin: 0 0;
+    }
 
     </style>
     {% block extra_head %}    
@@ -45,7 +48,7 @@
           <div class="mdl-layout-spacer"></div>
           <!-- Navigation. We hide it in small screens. -->
           <nav class="mdl-navigation mdl-layout--large-screen-only">
-            <a class="mdl-navigation__link" href="{% url 'quiz' %}">Take Quiz</a>
+            <a class="mdl-navigation__link" href="{% url 'tracks' %}">Take Quiz</a>
             <a class="mdl-navigation__link" href="">Explore</a>
             <a class="mdl-navigation__link" href="{% url 'about' %}">About Us</a>
             <button id="demo-menu-lower-right-large" class="mdl-button mdl-js-button mdl-button--icon">
@@ -86,7 +89,7 @@
       <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Quizzers</span>
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link" href="{% url 'quiz' %}">Take Quiz</a>
+          <a class="mdl-navigation__link" href="{% url 'tracks' %}">Take Quiz</a>
           <a class="mdl-navigation__link" href="">Explore</a>
           <a class="mdl-navigation__link" href="{% url 'about' %}">About Us</a>
         </nav>

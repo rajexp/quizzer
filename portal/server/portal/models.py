@@ -16,7 +16,7 @@ class Question(models.Model):
     question = models.TextField(blank=False, null=False)
     question_image = models.ImageField(blank=True, null=True, upload_to='question')
     option = ArrayField(models.CharField(max_length=50, blank=False, null=False),size=4)
-    answer = models.IntegerField(choices=(('1',1),('2',2),('3',3),('4',4)))
+    answer = models.IntegerField(choices=((1,'1'),(2,'2'),(3,'3'),(4,'4')))
     description = models.TextField(blank=True,null=True )
     tag = models.ManyToManyField(Tag)
     created_on  = models.DateTimeField(default= timezone.now)
@@ -32,7 +32,7 @@ class Track(models.Model):
 
 class Quiz(models.Model):
     title = models.TextField(blank=True,null=False )
-    track = models.OneToOneField(Track)
+    track = models.ForeignKey(Track)
     tag = models.ManyToManyField(Tag)
     description = models.TextField(blank=True, )
     question = models.ManyToManyField(Question, related_name="quiz")
@@ -90,7 +90,7 @@ class UserTrack(models.Model):
     tracks = models.ForeignKey(Track, related_name='usertrack')
 
 class UserQuizRecord(models.Model):
-    user = models.OneToOneField(User)
+    user = models.ForeignKey(User)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='userrecord')
     score = models.FloatField(default=0.00)
 

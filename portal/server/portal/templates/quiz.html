@@ -3,286 +3,123 @@
 
     
     <style type="text/css" media="all">
-        /*css reset */
-        html,body,div,span,h1,h2,h3,h4,h5,h6,p,code,small,strike,strong,sub,sup,b,u,i{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0;} 
+    html,body,div,span,p,code,small,strike,strong,sub,sup,b,u,i{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0;} 
         article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block;} 
-        body{line-height:1; font:normal 0.9em/1em "Helvetica Neue", Helvetica, Arial, sans-serif;} 
-        ol,ul{list-style:none;}
-        strong{font-weight:700;}
+        body{line-height:1; font:normal 0.9em/1em "Helvetica Neue", Helvetica, Arial, sans-serif;}
         #wrapper{
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            margin-top:5%;
+            padding-left: 5%;
             height:100vh;
         }
-        #frame{
+        .status-bar {
+            margin: auto auto;
+            color: white;
             position: relative;
             width: 100%;
+            height: 4em;
+            vertical-align: middle;
+            line-height: 4em;
+            background-color: skyblue;
+            }
+        .option{
+            position:relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .question_card_title{
-            justify-content: center;
+        .opt{
+            position: relative;
+            width:95%;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            border: 1px solid #e8edef;
+            padding-left: 1em;
+            height: 4em;
+            line-height: 4em;
+            vertical-align: middle;
+
         }
-        .question_card_action{
-            justify-content: center;
+        .counter{
+            vertical-align: middle;
+            position: relative;
+            display: inline-block;
+            height:2em;
+            width:2em;
+            line-height: 2em;
+            text-align: center;
+            border-radius: 1em;
+            background-color:darkgray;
         }
-        #btnquiz{
-            vertical-align:middle;
-            margin:0px auto 0px auto;}
-        h1{font:normal bold 2em/1.8em "Helvetica Neue", Helvetica, Arial, sans-serif;text-align:left;border-bottom:1px solid #999;padding:0;width:auto}
-        h2{font:italic bold 1.3em/1.2em "Helvetica Neue", Helvetica, Arial, sans-serif;padding:0;text-align:center;margin:20px 0;}
-        p.pager{margin:5px 0 5px; font:bold 1em/1em "Helvetica Neue", Helvetica, Arial, sans-serif;color:#999;}
-        img.question-image{display:block;max-width:250px;margin:10px auto;border:1px solid #ccc;width:100%;height:auto;}
-        #choice-block{display:block;list-style:none;margin:0;padding:0;}
-        #explanation{margin:0 auto;padding:20px;width:75%;}
-        .choice-box{display:block;text-align:center;margin:8px auto;padding:10px 0;border:1px solid #666;cursor:pointer;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;}
+        .opt:hover{
+            background-color: #e8edef;
+            border-color: #cbd3d6;
+        }
+        .que {
+            position: relative;
+            height: 2em;
+            line-height: 2em;
+            vertical-align: middle;
+            padding: auto auto;
+            margin: auto auto;
+        }
+        .subtitle {
+            padding-left: 5%;
+            text-align: left;
+        }
+        .msg {  
+            font-size: 1.1em;
+            color: #8e9aa9!important;
+        }
     </style>
+    <script>
+        function startTimer(){
+            var distance = {{ quiz.time }}*60;
+            var x = setInterval(function() {
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (60 * 60 * 24));
+            var hours = Math.floor((distance % (60 * 60 * 24)) / (60 * 60));
+            var minutes = Math.floor((distance % (60 * 60)) / 60);
+            var seconds = Math.floor((distance % 60));
+            var time = "";
+            time += (Math.floor(minutes/10)==0)?("0"+minutes.toString()+":"):minutes.toString()+":";
+            time += (Math.floor(seconds/10)==0)?("0"+seconds.toString()): seconds.toString();
+            // Display the result in the element with id="demo"
+            document.getElementById("time").innerHTML = time;
+            if (--distance < 0) {
+                clearInterval(x);
+                document.getElementById("time").innerHTML = "00:00";
+            }
+            }, 1000);
+        }
+        window.onload =function(){
+            startTimer();
+        }
+</script>
 {% endblock %}
 {% block body %}
     {% block content %}
-    <script>
-    var quiztitle = "Quiz";
-    var quiz = [];
-    var currentquestion = 0, score = 0, submt=true, picked,rank=0;
-
-    $(document).ready(function(){
-
-        /**
-         * HTML Encoding function for alt tags and attributes to prevent messy
-         * data appearing inside tag attributes.
-         */
-        function htmlEncode(value){
-          return $(document.createElement('div')).text(value).html();
-        }
-
-        /**
-         * This will add the individual choices for each question to the ul#choice-block
-         *
-         * @param {choices} array The choices from each question
-         */
-        function addOptions(choices){
-            if(typeof choices !== "undefined" && $.type(choices) == "array"){
-                $('#choice-block').empty();
-                for(var i=0;i<choices.length; i++){
-                    $(document.createElement('li')).addClass('choice choice-box').attr('data-index', i).text(choices[i]).appendTo('#choice-block');                    
-                }
-            }
-
-        }
-        
-        /**
-         * Resets all of the fields to prepare for next question
-         */
-        function nextQuestion(){
-            submt = true;
-            $('#explanation').empty();
-            $('#question').text(quiz.question[currentquestion]['question']);
-            $('#pager').text('' + Number(currentquestion + 1) + '/' + quiz.question.length);
-            if(quiz.question[currentquestion].hasOwnProperty('question_image') && quiz.question[currentquestion]['question_image'] != null){
-                if($('#question-image').length == 0){
-                    $(document.createElement('img')).addClass('question-image').attr('id', 'question-image').attr('src', quiz.question[currentquestion]['question_image']).attr('alt', htmlEncode(quiz.question[currentquestion]['question'])).insertAfter('#question');
-                } else {
-                    $('#question-image').attr('src', quiz.question[currentquestion]['question_image']).attr('alt', htmlEncode(quiz.question[currentquestion]['question']));
-                }
-            } else {
-                $('#question-image').remove();
-            }
-            addOptions(quiz.question[currentquestion]['option']);
-            setupButtons();
-        }
-
-        /**
-         * After a selection is submitted, checks if its the right answer
-         *
-         * @param {choice} number The li zero-based index of the choice picked
-         */
-        function processQuestion(choice){
-            console.log(typeof choice ,quiz.question[currentquestion]['answer']);
-            console.log(quiz.question[currentquestion]['option'][choice]);
-            console.log(quiz.question[currentquestion]['answer']);
-            if(Number(choice)+1 == quiz.question[currentquestion]['answer']){
-                $('.choice').eq(choice).css({'background-color':'green'});
-                $('#explanation').html('<strong>Correct!</strong> ' + htmlEncode(quiz.question[currentquestion]['description']));
-                score++;
-            } else {
-                $('.choice').eq(choice).css({'background-color':'green'});
-                 $('.choice').eq(quiz.question[currentquestion]['answer']-1).css({'background-color':'#c62828'});
-                $('#explanation').html('<strong>Incorrect.</strong> ' + htmlEncode(quiz.question[currentquestion]['description']));
-            }
-            currentquestion++;
-            $('#submitbutton').html('NEXT QUESTION &raquo;').on('click', function(){
-                if(currentquestion == quiz.question.length){
-                    getRank();
-                } else {
-                    $(this).text('Check Answer').css({'color':'#222'}).off('click');
-                    nextQuestion();
-                }
-            })
-        }
-
-        /**
-         * Sets up the event listeners for each button.
-         */
-        function setupButtons(){
-            $('.choice').on('mouseover', function(){
-                $(this).css({'background-color':'#e1e1e1'});
-            });
-            $('.choice').on('mouseout', function(){
-                $(this).css({'background-color':'#fff'});
-            })
-            $('.choice').on('click', function(){
-                picked = $(this).attr('data-index');
-                $('.choice').removeAttr('style').off('mouseout mouseover');
-                $(this).css({'border-color':'#222','font-weight':700,'background-color':'#c1c1c1'});
-                if(submt){
-                    submt=false;
-                    $('#submitbutton').css({'color':'#000'}).on('click', function(){
-                        $('.choice').off('click');
-                        $(this).off('click');
-                        processQuestion(picked);
-                    });
-                }
-            })
-        }
-        
-        /**
-         * Quiz ends, display a message.
-         */
-        function endQuiz(){
-            $('#explanation').empty();
-            $('#question').empty();
-            $('#choice-block').empty();
-            $('#submitbutton').remove();
-            $('#question').text("Rank : "+rank+"\nYou scored " + score + " out of " + quiz.question.length + " correct.");
-            $(document.createElement('h2')).css({'text-align':'center', 'font-size':'4em'}).text(Math.round(score/quiz.question.length * 100) + '%').insertAfter('#question');
-        }
-
-        /**
-         * Runs the first time and creates all of the elements for the quiz
-         */
-        function init(){
-            //add title
-            if(typeof quiz.title !== "undefined" && $.type(quiz.title) === "string"){
-                $('#frame').addClass('mdl-card mdl-shadow--2dp');
-                $('#title').addClass('mdl-card__title question_card_title');
-                $('#support').addClass('mdl-card__supporting-text  ');
-                $('#action').addClass('mdl-card__actions question_card_action');
-                $(document.createElement('h1')).addClass('mdl-card__title-text').text(quiz.title).appendTo('#title');
-            } else {
-                $(document.createElement('h1')).addClass('mdl-card__title-text').text("Quiz").appendTo('#title');
-            }
-
-            //add pager and questions
-            if(typeof quiz.question !== "undefined" && $.type(quiz.question) === "array"){
-                //add pager
-                $(document.createElement('span')).addClass('pager badge pull-right').attr('id','pager').text('1/' + quiz.question.length).appendTo('#support');
-                //add first question
-                $(document.createElement('h2')).addClass('question').attr('id', 'question').text(quiz.question[0]['question']).appendTo('#support');
-                //add image if present
-                console.log(quiz.question[0]['question_image']);
-                if(quiz.question[0].hasOwnProperty('question_image') && quiz.question[0]['question_image'] != null){
-                    $(document.createElement('img')).addClass('question-image').attr('id', 'question-image').attr('src', quiz.question[0]['.question_image']).attr('alt', htmlEncode(quiz.question[0]['.question'])).appendTo('#support');
-                }
-                // $(document.createElement('p')).addClass('explanation mdl-card__subtitle-text').attr('id','explanation').html('&nbsp;').appendTo('#title');
-            
-                //questions holder
-                $(document.createElement('ul')).attr('id', 'choice-block').appendTo('#action');
-            
-                //add choices
-                addOptions(quiz.question[0]['option']);
-            
-                //add submit button
-                $(document.createElement('button')).addClass('mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect').attr('id', 'submitbutton').text('Check Answer').appendTo('#action');
-            
-                setupButtons();
-            }
-        }
-        function csrfSafeMethod(method) {
-            // these HTTP methods do not require CSRF protection
-            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-        }
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie != '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-        var csrftoken = getCookie('csrftoken');
-
-        function loadQuiz(track){
-            console.log(track);
-            $.ajax({
-            url:'/api/quizzes/tracks?track='+track,
-            success:function(data){
-                quiz = data;
-                console.log(csrftoken);
-                init();
-            }
-            });
-        }
-        function getRank(){
-            $.ajax({
-            url:'/api/quizzes/1/rank/',
-            method:'POST',
-            data:{'quiz':quiz.id,'score':score},
-            dataType:'json',
-            success:function(data){
-                rank=data.rank;
-                endQuiz();
-            },
-            beforeSend: function(xhr, settings) {
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            }       
-            });
-        }
-        function showtracks(data){
-            document.getElementById("btnquiz").removeEventListener("click",loadQuiz,false);
-            $("#btnquiz").remove();
-            for(let track of  data ) {
-                $(document.createElement('button')).addClass('btn btn-primary').prop('id',track.name).text(track.name).appendTo('#wrapper');
-                document.getElementById(track.name).addEventListener("click",function(){loadQuiz(track.name);},false);
-            }
-        }
-        function choosetracks(){
-            $.ajax({
-            url:'/api/tracks/',
-            method:'GET',
-            dataType:'json',
-            success:function(data){
-                showtracks(data);
-            },
-            beforeSend: function(xhr, settings) {
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            }  
-            });
-        }
-        document.getElementById ("btnquiz").addEventListener("click", choosetracks, false);
-
-    });
-    </script>
-
-    
-    <div class="container">
-        <div class="row"><div class="col-md-8"><div class="" id="frame" role="content"><div class="" id="title"></div><div class="" id="media"></div><div class="" id="support"></div><div class="" id="action">
-            </div></div></div><div class="col-md-4"></div></div>
-        </div>
+        <div class="row status-bar"><div class="col-md-8"><h5>{{ quiz.title}}</h5></div><div class="col-md-2"><span id="time" style="float:right;"></span><span style="color:black; float:right;">Time Left&nbsp;:&nbsp;</span></div></div>
         <div class="row" id="wrapper">
-            <button class="btn btn-primary" id="btnquiz">Take Quiz</button>
+            <div class="row">
+                <div class="col-md-6">
+                {% for i in quiz.question %}
+                    <div class="panel panel-info" id="{{ i.id }}">
+                        <div class="panel-heading"><div class="panel-title">Que. {{ forloop.counter }}</div></div>
+                        <div class="panel-body">
+                            <div class="row que">{{ i.question }}</div>
+                            <div class="row option">
+                                {% for k in i.option %}
+                                    <div class="opt" id="{{ i.id }}{{ forloop.counter }}"><span class="counter">{{ forloop.counter }}</span>&nbsp;&nbsp;<span>{{ k }}</span></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div><div class="col-md-6"></div>
+            </div>
         </div>
-    </div>
     {% endblock %}
 
 {% endblock %}

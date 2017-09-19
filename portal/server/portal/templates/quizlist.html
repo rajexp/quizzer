@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block extra_head %}
+    <style>
+        html,body,div,span,p,code,small,strike,strong,sub,sup,b,u,i{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0;} 
+        article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block;} 
+        body{line-height:1; font:normal 0.9em/1em "Helvetica Neue", Helvetica, Arial, sans-serif;} 
+        ol,ul{list-style:none;}
+        strong{font-weight:700;}
+        #wrapper{
+            position: relative;
+            padding-left: 5%;
+            height:100vh;
+        }
+        .title {
+            padding-left: 5%;
+            text-align: left;
+            color:royalblue;
+            }
+        span > a {
+            height: 100%;
+            font-size: 1.4em;
+            color:teal;
+        }
+        .vertical{
+            text-decoration-style: border;
+            vertical-align: middle;
+        }
+        .msg {  
+            font-size: 1.1em;
+            color: #8e9aa9!important;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    {% block content %}    
+    <div class="row">
+        <div class="row"><div class="row title"><h2> Quiz List </h2></div>
+        <div class="row">
+            <div class="col-md-6" id="wrapper">
+                {% if quizs %}
+                <ul class="mdl-list">
+                    {% for quiz in quizs %}
+                        <li class="mdl-list__item mdl-list__item--three-line">
+                            <span class="mdl-list__item-primary-content">
+                            <span style="font-size:1.4em">{{ forloop.counter }}.</span>
+                            <a href="{% url 'quiz' quiz.id %}">
+                                <span >{{ quiz.title }}</span>
+                            </a>
+                            <span class="mdl-list__item-text-body">
+                                <span class="vertical">Tags : </span>{% for tag in quiz.tag %}
+                                <span class="mdl-chip ">
+                                    <span class="mdl-chip__text">{{ tag.name }}</span>
+                                </span>
+                                {% endfor %}
+                            </span>
+                            </span>
+                            <span class="mdl-list__item-secondary-content">
+                            <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">star</i></a>
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="msg"> No quiz avaliable right now. Check out after some time</p>
+                {% endif %}
+            
+            </div>
+            <div class="col-md-6"></div>
+        </div>
+    </div>
+    {% endblock %}
+
+{% endblock %}

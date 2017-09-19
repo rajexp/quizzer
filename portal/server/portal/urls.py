@@ -33,7 +33,9 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
     url(r'^api/', include(router.urls)),
     url(r'^profile/',views.profile, name='profile'),
-    url(r'^quiz/',views.quiz,name="quiz"),
+    url(r'^quiz/(?P<quiz>[0-9]+)',views.quiz,name="quiz"),
+    url(r'^tracks/$',views.tracks,name="tracks"),
+    url(r'^tracks/(?P<track>[0-9]+)',views.quizlist,name="quizlist"),
     url(r'^about/',views.about,name="about"),
     url(r'^social/link',views.getsocial,name="social-link"),
 ]

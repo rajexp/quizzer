@@ -17,7 +17,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
+from django.core import serializers
 import random
+import json
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -29,14 +31,31 @@ def profile(request):
     profile = UserProfile.objects.get(user=request.user)
     return render(request,'profile.html',context={'user':request.user,'user.profile':profile})
 
-def quiz(request):
-    return render(request,'quiz.html')
+def quiz(request,quiz=None):
+    _quiz = Quiz.objects.get(id=quiz)
+    quiz = QuizSerializer(_quiz)
+    return render(request,'quiz.html',context={'quiz':quiz.data})
+
+def tracks(request):
+    _tracks = Track.objects.all()
+    tracks = TrackSerializer(_tracks,many=True)
+    return render(request,'track.html',context={'tracks':tracks.data})
+
+def quizlist(request,track=None):
+    print(track)
+    _track = Track.objects.get(pk=track)
+    _quizzes = Quiz.objects.filter(track=_track)
+    quizzes = QuizSerializer(_quizzes,many=True)
+    return render(request,'quizlist.html',context={'quizs':quizzes.data})
 
 def about(request):
     return render(request,'about.html')
 
 def getsocial(request):
     fb = SocialAccount.objects.filter(user_id=request.user.id, provider='facebook')
+    user_list = User.objects.all()
+    user_list = json.loads(serializers.serialize('json',user_list))
+    return JsonResponse(user_list,safe=False)
     return JsonResponse({'fb_uid':fb[0].uid})
 
 class UserView(viewsets.ModelViewSet):
@@ -114,7 +133,7 @@ class QuizView(viewsets.ModelViewSet):
         try:
             quiz = quizzes[random.randint(0,len(quizzes)-1)]
         except:
-            quiz = Quiz.objects.get()
+            quiz = Quiz.objects.all()[0]
         serializer = self.get_serializer(quiz)
         print(serializer.data)
         return Response(serializer.data)
