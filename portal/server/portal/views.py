@@ -37,8 +37,16 @@ def quiz(request,quiz=None):
     _quiz = Quiz.objects.get(id=quiz)
     _user = UserProfile.objects.get(user=request.user)
     user = UserProfileSerializer(_user)
-    quiz = QuizSerializer(_quiz)
-    return render(request,'quiz.html',context={'quiz':quiz.data,"profile":user.data})
+    quizz = QuizSerializer(_quiz)
+    record = dict()
+    try:
+        _quizrecord = UserQuizRecord.objects.get(user=request.user,quiz=quiz)
+        quizrecord = UserQuizRecordSerializer(_quizrecord)
+        record['attempted'] = True
+        record['record'] = quizrecord.data
+    except UserQuizRecord.DoesNotExist:
+        record['attempted'] = False
+    return render(request,'quiz.html',context={'quiz':quizz.data,"profile":user.data,'record':record})
 
 def tracks(request):
     _tracks = Track.objects.all()
@@ -46,7 +54,6 @@ def tracks(request):
     return render(request,'track.html',context={'tracks':tracks.data})
 
 def quizlist(request,track=None):
-    print(track)
     _track = Track.objects.get(pk=track)
     _quizzes = Quiz.objects.filter(track=_track)
     quizzes = QuizSerializer(_quizzes,many=True)
@@ -62,13 +69,14 @@ def leaderboard(request,quiz=None):
 def about(request):
     return render(request,'about.html')
 
+@api_view(['POST'])
 def getsocial(request):
     fb = SocialAccount.objects.filter(user_id=request.data["user"], provider='facebook')
-    user_list = User.objects.all()
-    user_list = json.loads(serializers.serialize('json',user_list))
-    return JsonResponse(user_list,safe=False)
-    return JsonResponse({'fb_uid':fb[0].uid})
-
+    # fb_uid: False when no social account matches for that user
+    if fb:
+        return JsonResponse({'fb_uid':fb[0].uid})
+    else:
+        return JsonResponse({'fb_uid':False})
 class UserView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     model = User
@@ -93,7 +101,6 @@ class UserProfileView(viewsets.ModelViewSet):
     def myprofile(self, request):
         profile = UserProfile.objects.get(user=request.user)
         serializer = UserProfileSerializer(profile)
-        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 

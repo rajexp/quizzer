@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 from .models import Track, Tag, Question, Quiz, UserProfile, UserQuizRecord
  
  
@@ -103,6 +104,7 @@ class QuizSerializer(serializers.ModelSerializer):
         for i in obj.question.all():
             rep['question'].append(QuestionSerializer(i).data)
         rep['track'] = TrackSerializer(obj.track).data
+        rep['total'] = len(rep['question'])
         return rep
     
     def to_internal_value(self,rep):
@@ -136,3 +138,9 @@ class UserQuizRecordSerializer(serializers.ModelSerializer):
         model = UserQuizRecord
         fields = ('user', 'quiz','score')
         read_only_fields= ('user',)
+        validators = [
+            UniqueTogetherValidator(
+                queryset = UserQuizRecord.objects.all(),
+                fields = ('user','quiz')
+            )
+        ]

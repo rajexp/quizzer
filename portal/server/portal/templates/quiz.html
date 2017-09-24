@@ -26,24 +26,23 @@
         }
         #start-quiz {
             position: relative;
-            cursor: pointer;
             margin: auto auto;
             display: flex;
             flex-direction: column;
             color:white;
             font-size: 1em;
             width: 30%;
-            height: 30%;
+            height: 50%;
             text-align: center;
             background-color: skyblue;
             border-radius: 1em;
         }
         #start-quiz > div {
             position: relative;
-            height: 30%;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
         }
         #start-quiz > div > div {
-            margin: auto auto;
             position: relative;
             display: flex;
             vertical-align: middle;
@@ -387,7 +386,6 @@
             document.getElementById("time-label").innerText = "Time Taken : ";
             document.getElementById("time").innerText = timetaken;
             console.log(document.getElementById("submit-quiz"));
-            
             getRank();
 
         }
@@ -397,30 +395,71 @@
             startTimer();
             init();
         }
+        function viewQuiz(){
+            checkAnswers();
+            back();
+        }
         window.onload =function() {
-            document.getElementById ("start-quiz").addEventListener("click", start, false);
-            document.getElementById ("submit-quiz").addEventListener("click", submitQuiz, false);
+            try {
+                document.getElementById ("start-quiz-btn").addEventListener("click", start, false);
+                document.getElementById ("submit-quiz").addEventListener("click", submitQuiz, false);
+            }
+            catch(e) {
+                document.getElementById ("view-quiz-btn").addEventListener("click", viewQuiz, false);            
+            }
         }
 </script>
 {% endblock %}
 {% block body %}
     {% block content %}
     <div id="start">
-        <div id="start-quiz" class="mdl-color--teal">
-            <div class="row"><div class="col-md-12"><h5>{{ quiz.title }}&nbsp;</h5><em>{{ quiz.description }}</em></div></div>
+        <div id="start-quiz" class=" row mdl-color--teal">
+            <div class="row">
+                <div class="col-md-12 text-center"><h5><b>{{ quiz.title }}&nbsp;</b></h5></div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center"><em>{{ quiz.description }}</em></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6"><h6>Questions : {{ quiz.total }}</h6></div>
+                <div class="col-md-6"><h6>Time : {{ quiz.time }} min. </h6></div>
+            </div>
             {% if user.is_authenticated %}
             <div class="row"><div class="col-md-4"><img src="/static/{{ profile.photo }}" style="width:50px;height:50px;border-radius:50%;"/></div><div class="col-md-2"></div><div class="col-md-6"><span>{{ profile.user.first_name }}&nbsp;{{ profile.user.last_name}}</span></div></div>
-            {% endif %}
+            {% if record.attempted is True %}
             <div class="row">
-                <div class="col-md-12">
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Start</button>
+                <div class="col-md-6"><h6>SCORE</h6></div><div class="col-md-6"><h6>{{ record.record.score }}</h6></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="view-quiz-btn">VIEW QUIZ</button>
+                </div>
+                <div class="col-md-6">
+                    <a href="{% url 'leaderboard' quiz.id %}"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">LEADERBOARD</button></a>
                 </div>
             </div>
+            {% else %}
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="start-quiz-btn">Start</button>
+                </div>
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="/accounts/login/?next={% firstof request.path '/' %}">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Login to attempt!</button>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
         </div>
         
     </div>
     <div id ="quiz" class="quiz-hidden">
-        <div class="row status-bar"><div class="col-md-9"><h5>{{ quiz.title}}</h5></div><div class="col-md-3" style="float:right;"><span style="color:black;" id="time-label">Time Left&nbsp;:&nbsp;</span><span id="time"></span></div></div>
+        <div class="row status-bar"><div class="col-md-9"><h5>{{ quiz.title}}</h5></div><div class="col-md-3" style="float:right;">{% if not record.attempted %}<span style="color:black;" id="time-label">Time Left&nbsp;:&nbsp;</span><span id="time"></span>{% endif %}</div></div>
         <div class="row" id="wrapper">
             <div class="row">
                 <div class="col-md-6">
@@ -437,8 +476,15 @@
                         </div>
                     </div>
                 {% endfor %}
-                <div class="row"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="submit-quiz">Submit</button></div>
+                {% if record.attempted %}
+                <div class="row">
+                    <a href="{% url 'leaderboard' quiz.id %}"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">LEADERBOARD</button></a>
                 </div>
+                {% else %}
+                <div class="row">
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="submit-quiz">Submit</button></div>
+                </div>
+                {% endif %}
                 <div class="col-md-6"></div>
             </div>
         </div>
