@@ -4,22 +4,22 @@
     <script>
         var user;
         $(document).ready(function(){
+            var profile = {{ profile|safe }};
             function init(){
-                console.log(user);
-                document.getElementById("name").innerHTML = user.first_name+ ' '+user.last_name;
-                document.getElementById("username").innerHTML = (user.username);
-                document.getElementById("email").innerHTML = (user.email);
-                document.getElementById("birth").innerHTML = (user.profile.birthdate)?user.profile.birthdate:'';
-                document.getElementById("bio").innerHTML = (user.profile.bio);
-                document.getElementById("college").innerHTML = (user.profile.college);
-                document.getElementById("state").innerHTML = (user.profile.state)?user.profile.state:'';
-                document.getElementById("passout").innerHTML = (user.profile.passout)?user.profile.passout:'';
-                console.log(user.profile.photo);
-                if(user.profile.photo!=null)
-                document.getElementById("title_profile").style.backgroundImage="url('/static"+user.profile.photo+"')";
+                document.getElementById("name").innerHTML = profile.user.first_name+ ' '+profile.user.last_name;
+                document.getElementById("username").innerHTML = (profile.user.username);
+                document.getElementById("email").innerHTML = (profile.user.email);
+                document.getElementById("birth").innerHTML = (profile.birthdate)?profile.birthdate:'';
+                document.getElementById("bio").innerHTML = (profile.bio);
+                document.getElementById("college").innerHTML = (profile.college);
+                document.getElementById("state").innerHTML = (profile.state)?profile.state:'';
+                document.getElementById("passout").innerHTML = (profile.passout)?profile.passout:'';
+                console.log(profile.photo);
+                if(profile.photo!=null)
+                document.getElementById("title_profile").style.backgroundImage="url('/static"+profile.photo+"')";
             }
             $.ajax({
-            url:'/api/users/'+String({{ request.user.id }}),
+            url:'/api/users/'+profile.user.id,
             method:'GET',
             dataType:'json',
             success:function(data){
@@ -36,6 +36,7 @@
                 });
             } 
             });
+            // To be corrected soon
             $.ajax({
             url:'/social/link',
             method:'GET',
@@ -79,7 +80,7 @@
                     <div class="mdl-card__title" id="title_profile">
                         <ul class="profile-overlay mdl-list">
                             <li>
-                                <h5 class="mdl-card__title-text">{{ user.first_name }} {{user.last_name}}</h5>
+                                <h5 class="mdl-card__title-text">{{ profile.user.first_name }} {{ profile.user.last_name}}</h5>
                             </li>
                             <li>
                             <p  id="bio"></p>

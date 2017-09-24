@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block extra_head %}
+<style>
+    ul>li{
+        height: 60px;
+    }
+</style>
+{% endblock %}
+{% block body %}
+    {% block content %}
+    <div id="container">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <h3>LeaderBoard</h3>
+                <ul class="demo-list-two mdl-list">
+                    {% for leader in leaders %}
+                    {% ifequal user.id leader.profile.user.id %}
+                    <li class="mdl-list__item mdl-list__item--two-line" style="background:skyblue;">
+                    {% else %}
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                    {% endifequal %}
+                        <span class="mdl-list__item-primary-content" style="height:60px;">
+                            <a href="{% url 'profile' leader.profile.user.username %}"><img src="/static/{{ leader.profile.photo }}" style="width:50px;height:50px;border-radius:50%;"/></a>
+                            <span>{{ leader.profile.user.first_name }}&nbsp;{{ leader.profile.user.last_name}}</span>
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                        <span class="mdl-list__item-secondary-info">Rank</span>
+                        <a class="mdl-list__item-secondary-action" href="#">{{ forloop.counter }}</a>
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-md-3">
+        </div>
+    </div>
+    {% endblock %}
+{% endblock %}

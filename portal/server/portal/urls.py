@@ -28,12 +28,14 @@ router.register(r'questions', viewset=views.QuestionView)
 router.register(r'quizzes', viewset=views.QuizView)
 router.register(r'users', viewset=views.UserView)
 router.register(r'userprofile', viewset=views.UserProfileView)
+router.register(r'userquizrecord',viewset=views.UserQuizRecordView)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^api/', include(router.urls)),
-    url(r'^profile/',views.profile, name='profile'),
-    url(r'^quiz/(?P<quiz>[0-9]+)',views.quiz,name="quiz"),
+    url(r'^profile/@(?P<user>[a-zA-Z0-9]+)',views.profile, name='profile'),
+    url(r'^quiz/(?P<quiz>[0-9]+)$',views.quiz,name="quiz"),
+    url(r'^quiz/(?P<quiz>[0-9]+)/leaderboard',views.leaderboard,name="leaderboard"),
     url(r'^tracks/$',views.tracks,name="tracks"),
     url(r'^tracks/(?P<track>[0-9]+)',views.quizlist,name="quizlist"),
     url(r'^about/',views.about,name="about"),

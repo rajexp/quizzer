@@ -27,14 +27,18 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 # @api_view(['GET','POST'])
-def profile(request):
-    profile = UserProfile.objects.get(user=request.user)
-    return render(request,'profile.html',context={'user':request.user,'user.profile':profile})
+def profile(request,user):
+    user = User.objects.get(username=user)
+    _profile = UserProfile.objects.get(user=user)
+    profile = UserProfileSerializer(_profile)
+    return render(request,'profile.html',context={'profile':profile.data})
 
 def quiz(request,quiz=None):
     _quiz = Quiz.objects.get(id=quiz)
+    _user = UserProfile.objects.get(user=request.user)
+    user = UserProfileSerializer(_user)
     quiz = QuizSerializer(_quiz)
-    return render(request,'quiz.html',context={'quiz':quiz.data})
+    return render(request,'quiz.html',context={'quiz':quiz.data,"profile":user.data})
 
 def tracks(request):
     _tracks = Track.objects.all()
@@ -48,11 +52,18 @@ def quizlist(request,track=None):
     quizzes = QuizSerializer(_quizzes,many=True)
     return render(request,'quizlist.html',context={'quizs':quizzes.data})
 
+def leaderboard(request,quiz=None):
+    _quiz = Quiz.objects.get(id = quiz)
+    _quizrecord = UserQuizRecord.objects.filter(quiz=_quiz).order_by('-score')
+    quizrecord = UserQuizRecordSerializer(_quizrecord,many=True)
+    return render(request,'leaderboard.html',context={"leaders":quizrecord.data})
+
+
 def about(request):
     return render(request,'about.html')
 
 def getsocial(request):
-    fb = SocialAccount.objects.filter(user_id=request.user.id, provider='facebook')
+    fb = SocialAccount.objects.filter(user_id=request.data["user"], provider='facebook')
     user_list = User.objects.all()
     user_list = json.loads(serializers.serialize('json',user_list))
     return JsonResponse(user_list,safe=False)
@@ -70,8 +81,8 @@ class UserView(viewsets.ModelViewSet):
 
 class UserProfileView(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
-    model = User
-    queryset = User.objects.all()
+    model = UserProfile
+    queryset = UserProfile.objects.all()
  
     def get_permissions(self):
         # allow non-authenticated user to create via POST
@@ -144,6 +155,18 @@ class QuizView(viewsets.ModelViewSet):
         serializer = UserQuizRecordSerializer(data = request.data )
         if serializer.is_valid():
             serializer.save(user=request.user)
-            rank = UserQuizRecord.objects.filter(Q(quiz=request.data.quiz.id),Q(score__gte=request.data.get('score'))).count()
-            return Response({'rank':rank}, status=status.HTTP_201_CREATED)
+            quiz = UserQuizRecord.objects.filter(Q(quiz=request.data.quiz.id))
+            rank = quiz.filter(Q(score__gt=request.data.get('score'))).count()+1
+            total = quiz.count()
+            return Response({'rank':rank,'total':total}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserQuizRecordView(viewsets.ModelViewSet):
+    serializer_class = UserQuizRecordSerializer
+    queryset = UserQuizRecord.objects.all()
+    model = UserQuizRecord
+
+    def get_permissions(self):
+        # allow non-authenticated user to create via POST
+        return (AllowAny() if self.request.method == 'GET'
+                else IsStaffOrTargetUser()),

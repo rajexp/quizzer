@@ -5,13 +5,67 @@
     <style type="text/css" media="all">
     html,body,div,span,p,code,small,strike,strong,sub,sup,b,u,i{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0;} 
         article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block;} 
-        body{line-height:1; font:normal 0.9em/1em "Helvetica Neue", Helvetica, Arial, sans-serif;}
         #wrapper{
             position: relative;
             margin-top:5%;
             padding-left: 5%;
-            height:100vh;
+            height: 100vh;
         }
+        #start{
+            position: fixed;
+            width:100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            height: 100vh;
+        }
+        #stats{
+            margin: auto auto;
+            width:40%;
+        }
+        #start-quiz {
+            position: relative;
+            cursor: pointer;
+            margin: auto auto;
+            display: flex;
+            flex-direction: column;
+            color:white;
+            font-size: 1em;
+            width: 30%;
+            height: 30%;
+            text-align: center;
+            background-color: skyblue;
+            border-radius: 1em;
+        }
+        #start-quiz > div {
+            position: relative;
+            height: 30%;
+        }
+        #start-quiz > div > div {
+            margin: auto auto;
+            position: relative;
+            display: flex;
+            vertical-align: middle;
+            height:100%;
+            line-height: 100%;
+        }
+        #start-quiz > div > div> * {
+            margin: auto auto;
+            position: relative;
+        }
+
+        .quiz-hidden{
+            height:0;
+            width:0;
+            visibility: hidden;
+        }
+        .quiz-visible{
+            width:100%;
+            height:auto;
+            visibility: visible;
+        }
+
         .status-bar {
             margin: auto auto;
             color: white;
@@ -21,7 +75,7 @@
             vertical-align: middle;
             line-height: 4em;
             background-color: skyblue;
-            }
+        }
         .option{
             position:relative;
             display: flex;
@@ -71,55 +125,324 @@
             font-size: 1.1em;
             color: #8e9aa9!important;
         }
+        .selected-option{
+            position: relative;
+            width:95%;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            border: 1px solid darkcyan;
+            background-color: grey;
+            padding-left: 1em;
+            height: 4em;
+            line-height: 4em;
+            vertical-align: middle;
+        }
+        .correct-option{
+            position: relative;
+            width:95%;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            border: 2px solid green;
+            padding-left: 1em;
+            height: 4em;
+            line-height: 4em;
+            vertical-align: middle;
+        }
+        .incorrect-option{
+            position: relative;
+            width:95%;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            border: 2px solid maroon;
+            padding-left: 1em;
+            height: 4em;
+            line-height: 4em;
+            vertical-align: middle;
+        }
+        .question-status {
+            float:right;
+            text-align:right;
+        }
+        tr> td:last-child{
+            text-align: right;
+        }
     </style>
     <script>
-        function startTimer(){
-            var distance = {{ quiz.time }}*60;
-            var x = setInterval(function() {
+        var userans = [];
+        var stats = {};
+        var quiz = {{ quiz|safe}};
+        var rank = 0;
+        var total;
+        var timer = null;
+        var time, timetaken;
+        function init() {
+        }
+        function back() {
+            document.getElementById("quiz").className="quiz-visible";
+            document.getElementById("start").className="quiz-hidden";
+        }
+        function leaderboard() {
+            document.getElementById("start").className="quiz-visible";
+            document.getElementById("quiz").className="quiz-hidden";
+        }
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
 
+        function getRank() {
+            $.ajax({
+            url:'/api/quizzes/'+quiz.id +'/rank/',
+            method:'POST',
+            data:{'quiz':quiz.id,'score':stats["score"]},
+            dataType:'json',
+            success:function(data){
+                rank=data.rank;
+                total=data.total;
+                showStats();
+            },
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }       
+            });
+        }
+
+        function startTimer() {
+            var distance = quiz.time * 60;
+            var elapsed = 0;
+            timer = setInterval(function() {
             // Time calculations for days, hours, minutes and seconds
-            var days = Math.floor(distance / (60 * 60 * 24));
-            var hours = Math.floor((distance % (60 * 60 * 24)) / (60 * 60));
-            var minutes = Math.floor((distance % (60 * 60)) / 60);
-            var seconds = Math.floor((distance % 60));
-            var time = "";
-            time += (Math.floor(minutes/10)==0)?("0"+minutes.toString()+":"):minutes.toString()+":";
+            let days = Math.floor(elapsed / (60 * 60 * 24));
+            let hours = Math.floor((elapsed % (60 * 60 * 24)) / (60 * 60));
+            let minutes = Math.floor((elapsed % (60 * 60)) / 60);
+            let seconds = Math.floor((elapsed % 60));
+            timetaken = "";
+            timetaken += (Math.floor(minutes/10)==0)?("0"+minutes.toString()+":"): minutes.toString()+":";
+            timetaken += (Math.floor(seconds/10)==0)?("0"+seconds.toString()): seconds.toString();
+            days = Math.floor(distance / (60 * 60 * 24));
+            hours = Math.floor((distance % (60 * 60 * 24)) / (60 * 60));
+            minutes = Math.floor((distance % (60 * 60)) / 60);
+            seconds = Math.floor((distance % 60));
+            time = "";
+            time += (Math.floor(minutes/10)==0)?("0"+minutes.toString()+":"): minutes.toString()+":";
             time += (Math.floor(seconds/10)==0)?("0"+seconds.toString()): seconds.toString();
             // Display the result in the element with id="demo"
-            document.getElementById("time").innerHTML = time;
+            document.getElementById("time").innerText = time;
+            elapsed++;
             if (--distance < 0) {
-                clearInterval(x);
-                document.getElementById("time").innerHTML = "00:00";
+                clearInterval(timer);
+                submitQuiz();
+                document.getElementById("time").innerText = "00:00";
             }
             }, 1000);
         }
-        window.onload =function(){
+        function disableAnswer() {
+            let opt = document.getElementsByClassName("opt");
+            for(let i=0;i<opt.length;i++) {
+                opt[i].removeAttribute("onclick");
+            }
+        }
+        function checkAnswers() {
+            var questions = quiz.question;
+            var correct=0,incorrect=0;
+            for(let i=0;i < questions.length;i++) {
+                let attempted = false;
+                for(let j=0;j<userans.length;j++) {
+                    if(userans[j]["qid"] == questions[i]["id"]) {
+                        attempted = true;
+                        if(userans[j]["option"] == questions[i]["answer"]) {
+                            // redundent correction
+                            let node = document.getElementById(questions[i].id.toString()+questions[i].answer.toString()).parentNode.parentNode.parentNode;
+                            node.setAttribute("class","panel panel-success");
+                            node.getElementsByClassName("panel-heading")[0].getElementsByClassName("question-status")[0].innerHTML="correct";
+                            correct++;
+                        }
+                        else {
+                            let node = document.getElementById(questions[i].id.toString()+questions[i].answer.toString()).parentNode.parentNode.parentNode;
+                            node.setAttribute("class","panel panel-danger");
+                            node.getElementsByClassName("panel-heading")[0].getElementsByClassName("question-status")[0].innerHTML="incorrect";
+                            document.getElementById(questions[i].id.toString()+userans[j]["option"].toString()).className="incorrect-option";
+                            incorrect++;
+                        }
+                    }
+                }
+                document.getElementById(questions[i].id.toString()+questions[i].answer.toString()).className="correct-option";
+                if (!attempted) {
+                    let node = document.getElementById(questions[i].id.toString()+questions[i].answer.toString()).parentNode.parentNode.parentNode;
+                    node.setAttribute("class","panel panel-warning");
+                    node.getElementsByClassName("panel-heading")[0].getElementsByClassName("question-status")[0].innerHTML="skipped";
+                }
+
+            }
+            stats["correct"] = correct;
+            stats["incorrect"] = incorrect;
+            stats["skipped"] = questions.length-userans.length;
+            stats["score"]= correct - 0.25*incorrect;
+            disableAnswer();
+        }
+        function register(qid,oid) {
+            var choosenOption = document.getElementById(qid.toString()+oid.toString());
+            for(var i=0;i<choosenOption.parentNode.childNodes.length;i++) {
+                choosenOption.parentNode.childNodes[i].className="opt";
+            }
+            choosenOption.className="selected-option";
+            var found = false;
+            for(var i=0;i<userans.length;i++) {
+                if( userans[i]["qid"]==qid) {
+                    userans[i]["option"] = oid;
+                    found = true;
+                    break;
+                }
+            }
+            if ( found == false ) {
+                userans.push({"qid":qid,"option":oid});
+            }
+        }
+        function showStats(){
+            // var div = document.createElement("div");
+            // div.setAttribute("id","start");
+            let paneldiv = document.createElement("div");
+            paneldiv.setAttribute("id","stats");
+            paneldiv.setAttribute("class","panel panel-success");
+            let panelheading =document.createElement("div");
+            panelheading.setAttribute("class","panel-heading");
+            let paneltitle =document.createElement("div");
+            paneltitle.setAttribute("class","panel-title");
+            let text = document.createTextNode("Perfromance");
+            paneltitle.appendChild(text);
+            panelheading.appendChild(paneltitle);
+            let panelbody = document.createElement("div");
+            panelbody.setAttribute("class","panel-body");
+            let statTable = document.createElement("table");
+            statTable.setAttribute("class","table");
+            let statList =document.createElement("tbody");
+            let child = document.createElement("tr");
+            child.setAttribute("class","bg-primary");
+            child.innerHTML = "<td>Time Taken</td><td>"+timetaken+"</td>";
+            statList.appendChild(child);
+            child = document.createElement("tr");
+            child.setAttribute("class","bg-warning");
+            child.innerHTML = "<td>Rank</td><td>"+rank.toString()+"/"+total.toString()+"</td>";
+            statList.appendChild(child);
+            child = document.createElement("tr");
+            child.setAttribute("class","bg-success");
+            child.innerHTML = "<td>Correct</td><td>"+stats["correct"].toString()+"</td>";
+            statList.appendChild(child);
+            child = document.createElement("tr");
+            child.setAttribute("class","bg-danger");
+            child.innerHTML = "<tr><td>Incorrect</td><td>"+stats["incorrect"].toString()+"</td>";
+            statList.appendChild(child);
+            child = document.createElement("tr");
+            child.setAttribute("class","bg-info");
+            child.innerHTML = "<tr><td>Skipped</td><td>"+stats["skipped"].toString()+"</td>";
+            statList.appendChild(child);
+            statTable.appendChild(statList);
+            panelbody.appendChild(statTable);
+            let div =document.createElement("div");
+            div.setAttribute("class","row");
+            let anchor =document.createElement("a");
+            anchor.setAttribute("href","{% url 'leaderboard' quiz.id %}");
+            let button = document.createElement("button");
+            button.setAttribute("class","mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent pull-left");
+            button.innerText = "Leaderboard";
+            anchor.appendChild(button);
+            div.appendChild(anchor);
+            button = document.createElement("button");
+            button.setAttribute("class","mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent pull-right");
+            button.innerText = "Back";
+            button.setAttribute("onclick","back();");
+            div.appendChild(button);
+            panelbody.appendChild(div);
+            paneldiv.appendChild(panelheading);
+            paneldiv.appendChild(panelbody);
+            // div.appendChild(paneldiv);
+            document.getElementById("start").appendChild(paneldiv);
+            document.getElementById("quiz").className="quiz-hidden";
+        }
+        function submitQuiz() {
+            alert("Do you wish to submit the Quiz ?");
+            checkAnswers();
+            clearInterval(timer);
+            document.getElementById("submit-quiz").removeEventListener("click",submitQuiz);
+            document.getElementById("submit-quiz").innerText = "PERFORMANCE";
+            document.getElementById("submit-quiz").setAttribute("onclick","leaderboard();");
+            document.getElementById("time-label").innerText = "Time Taken : ";
+            document.getElementById("time").innerText = timetaken;
+            console.log(document.getElementById("submit-quiz"));
+            
+            getRank();
+
+        }
+        function start() {
+            document.getElementById("start-quiz").remove();
+            document.getElementById("quiz").className="quiz-visible";
             startTimer();
+            init();
+        }
+        window.onload =function() {
+            document.getElementById ("start-quiz").addEventListener("click", start, false);
+            document.getElementById ("submit-quiz").addEventListener("click", submitQuiz, false);
         }
 </script>
 {% endblock %}
 {% block body %}
     {% block content %}
-        <div class="row status-bar"><div class="col-md-8"><h5>{{ quiz.title}}</h5></div><div class="col-md-2"><span id="time" style="float:right;"></span><span style="color:black; float:right;">Time Left&nbsp;:&nbsp;</span></div></div>
+    <div id="start">
+        <div id="start-quiz" class="mdl-color--teal">
+            <div class="row"><div class="col-md-12"><h5>{{ quiz.title }}&nbsp;</h5><em>{{ quiz.description }}</em></div></div>
+            {% if user.is_authenticated %}
+            <div class="row"><div class="col-md-4"><img src="/static/{{ profile.photo }}" style="width:50px;height:50px;border-radius:50%;"/></div><div class="col-md-2"></div><div class="col-md-6"><span>{{ profile.user.first_name }}&nbsp;{{ profile.user.last_name}}</span></div></div>
+            {% endif %}
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Start</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <div id ="quiz" class="quiz-hidden">
+        <div class="row status-bar"><div class="col-md-9"><h5>{{ quiz.title}}</h5></div><div class="col-md-3" style="float:right;"><span style="color:black;" id="time-label">Time Left&nbsp;:&nbsp;</span><span id="time"></span></div></div>
         <div class="row" id="wrapper">
             <div class="row">
                 <div class="col-md-6">
                 {% for i in quiz.question %}
                     <div class="panel panel-info" id="{{ i.id }}">
-                        <div class="panel-heading"><div class="panel-title">Que. {{ forloop.counter }}</div></div>
+                        <div class="panel-heading"><div class="panel-title"><div class="row"><div class="col-md-9">Que. {{ forloop.counter }}</div><div class="col-md-3 question-status"></div></div></div></div>
                         <div class="panel-body">
                             <div class="row que">{{ i.question }}</div>
                             <div class="row option">
                                 {% for k in i.option %}
-                                    <div class="opt" id="{{ i.id }}{{ forloop.counter }}"><span class="counter">{{ forloop.counter }}</span>&nbsp;&nbsp;<span>{{ k }}</span></div>
+                                    <div class="opt" id="{{ i.id }}{{ forloop.counter }}" onclick="register({{ i.id }},{{ forloop.counter }});"><span class="counter">{{ forloop.counter }}</span>&nbsp;&nbsp;<span>{{ k }}</span></div>
                                 {% endfor %}
                             </div>
                         </div>
                     </div>
                 {% endfor %}
-                </div><div class="col-md-6"></div>
+                <div class="row"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="submit-quiz">Submit</button></div>
+                </div>
+                <div class="col-md-6"></div>
             </div>
         </div>
+    </div>
     {% endblock %}
 
 {% endblock %}

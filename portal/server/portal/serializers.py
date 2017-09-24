@@ -4,9 +4,19 @@ from .models import Track, Tag, Question, Quiz, UserProfile, UserQuizRecord
  
  
 class UserSerializer(serializers.ModelSerializer):
+    def to_representation(self, obj):
+        rep = super(UserSerializer, self).to_representation(obj)
+        for field in self.fields:
+            try:
+                if rep[field] is None:
+                    rep[field]=""
+            except:
+                pass
+        return rep
+
     class Meta:
         model = User
-        fields = ('password', 'first_name', 'last_name', 'email', 'username')
+        fields = ('id','password', 'first_name', 'last_name', 'email', 'username') # id required in profile view
         extra_kwargs = {'password': {'write_only': True}}
         read_only_fields = ('is_staff', 'is_superuser', 'is_active', 'date_joined',)
  
@@ -29,6 +39,17 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    def to_representation(self, obj):
+        rep = super(UserProfileSerializer, self).to_representation(obj)
+        rep['user'] = UserSerializer(obj.user).data
+        for field in self.fields:
+            try:
+                if rep[field] is None:
+                    rep[field]=""
+            except:
+                pass
+        return rep
+
     class Meta:
         model = UserProfile
         fields = ('user','photo','bio','birth_date','state','college','passout')
@@ -54,6 +75,10 @@ class QuestionSerializer(serializers.ModelSerializer):
         rep['tag'] = []
         for i in obj.tag.all():
             rep['tag'].append(TagSerializer(i).data)
+        if rep["description"] is None:
+            rep["description"] = ""
+        if rep["question_image"] is None:
+            rep["question_image"] = ""
         return rep
     
     def to_internal_value(self,rep):
@@ -102,6 +127,11 @@ class QuizSerializer(serializers.ModelSerializer):
         read_only_fields = ('id','created_on','modified_on')
 
 class UserQuizRecordSerializer(serializers.ModelSerializer):
+    def to_representation(self, obj):
+        rep = super(UserQuizRecordSerializer, self).to_representation(obj)
+        rep['profile'] = UserProfileSerializer(UserProfile.objects.get(user=obj.user)).data
+        return rep
+
     class Meta:
         model = UserQuizRecord
         fields = ('user', 'quiz','score')
