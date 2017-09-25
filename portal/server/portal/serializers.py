@@ -122,7 +122,6 @@ class QuizSerializer(serializers.ModelSerializer):
             pass
         return rep
 
-
     class Meta:
         model = Quiz
         fields = ('id','title','track','tag','description','question','time')
@@ -137,7 +136,6 @@ class UserQuizRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserQuizRecord
         fields = ('user', 'quiz','score')
-        read_only_fields= ('user',)
         validators = [
             UniqueTogetherValidator(
                 queryset = UserQuizRecord.objects.all(),

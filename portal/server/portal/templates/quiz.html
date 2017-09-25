@@ -32,7 +32,7 @@
             color:white;
             font-size: 1em;
             width: 30%;
-            height: 50%;
+            max-height: 50%;
             text-align: center;
             background-color: skyblue;
             border-radius: 1em;
@@ -259,7 +259,7 @@
                 opt[i].removeAttribute("onclick");
             }
         }
-        function checkAnswers() {
+        function checkAnswers(mode) {
             var questions = quiz.question;
             var correct=0,incorrect=0;
             for(let i=0;i < questions.length;i++) {
@@ -284,7 +284,7 @@
                     }
                 }
                 document.getElementById(questions[i].id.toString()+questions[i].answer.toString()).className="correct-option";
-                if (!attempted) {
+                if (!attempted && mode) {
                     let node = document.getElementById(questions[i].id.toString()+questions[i].answer.toString()).parentNode.parentNode.parentNode;
                     node.setAttribute("class","panel panel-warning");
                     node.getElementsByClassName("panel-heading")[0].getElementsByClassName("question-status")[0].innerHTML="skipped";
@@ -378,7 +378,7 @@
         }
         function submitQuiz() {
             alert("Do you wish to submit the Quiz ?");
-            checkAnswers();
+            checkAnswers(true);
             clearInterval(timer);
             document.getElementById("submit-quiz").removeEventListener("click",submitQuiz);
             document.getElementById("submit-quiz").innerText = "PERFORMANCE";
@@ -396,7 +396,7 @@
             init();
         }
         function viewQuiz(){
-            checkAnswers();
+            checkAnswers(false); // Not real checking
             back();
         }
         window.onload =function() {

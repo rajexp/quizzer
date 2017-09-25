@@ -35,9 +35,11 @@ def profile(request,user):
 
 def quiz(request,quiz=None):
     _quiz = Quiz.objects.get(id=quiz)
+    quizz = QuizSerializer(_quiz)
+    if not request.user.is_authenticated():
+        return render(request,'quiz.html',context={'quiz':quizz.data})
     _user = UserProfile.objects.get(user=request.user)
     user = UserProfileSerializer(_user)
-    quizz = QuizSerializer(_quiz)
     record = dict()
     try:
         _quizrecord = UserQuizRecord.objects.get(user=request.user,quiz=quiz)
@@ -55,7 +57,7 @@ def tracks(request):
 
 def quizlist(request,track=None):
     _track = Track.objects.get(pk=track)
-    _quizzes = Quiz.objects.filter(track=_track)
+    _quizzes = Quiz.objects.filter(track=_track) # Optimise only required fields to be sent
     quizzes = QuizSerializer(_quizzes,many=True)
     return render(request,'quizlist.html',context={'quizs':quizzes.data})
 
@@ -63,7 +65,7 @@ def leaderboard(request,quiz=None):
     _quiz = Quiz.objects.get(id = quiz)
     _quizrecord = UserQuizRecord.objects.filter(quiz=_quiz).order_by('-score')
     quizrecord = UserQuizRecordSerializer(_quizrecord,many=True)
-    return render(request,'leaderboard.html',context={"leaders":quizrecord.data})
+    return render(request,'leaderboard.html',context={"leaders":quizrecord.data, "title":_quiz.title})
 
 
 def about(request):
@@ -77,6 +79,11 @@ def getsocial(request):
         return JsonResponse({'fb_uid':fb[0].uid})
     else:
         return JsonResponse({'fb_uid':False})
+
+@api_view(['GET'])
+def contribute(request):
+    return render(request,'contribute.html')
+
 class UserView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     model = User
@@ -158,14 +165,16 @@ class QuizView(viewsets.ModelViewSet):
 
     @detail_route(methods=['get','post'], permission_classes=[IsAuthenticated], url_path='rank')
     def rank(self, request, pk=None):
-        request.data.quiz = Quiz.objects.get(pk=pk)
-        serializer = UserQuizRecordSerializer(data = request.data )
+        data = request.data.copy()
+        data['user'] = request.user.id
+        serializer = UserQuizRecordSerializer(data = data )
         if serializer.is_valid():
-            serializer.save(user=request.user)
-            quiz = UserQuizRecord.objects.filter(Q(quiz=request.data.quiz.id))
-            rank = quiz.filter(Q(score__gt=request.data.get('score'))).count()+1
+            serializer.save()
+            quiz = UserQuizRecord.objects.filter(Q(quiz=data['quiz']))
+            rank = quiz.filter(Q(score__gt=data['score'])).count()+1
             total = quiz.count()
             return Response({'rank':rank,'total':total}, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserQuizRecordView(viewsets.ModelViewSet):
