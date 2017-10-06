@@ -1,0 +1,181 @@
+{% extends "./base.html" %}
+    {% block extra_head %}
+    <style>
+      .wrapper {
+            margin: auto;
+            margin-top: 20px;
+            max-width: 978px;
+            width:auto;
+        }
+        /*#contribute {
+            margin-top: 5%;
+        }*/
+        .panel-body > div  {
+            display: flex;
+            padding: auto auto;
+            justify-content: space-between;
+        }
+        #heart {
+            color:palevioletred;
+            font-size: 1.4em;
+        }
+        .panel-title {
+            font-size: 1.5em;
+            padding: 1em;
+        }
+        .panel-heading {
+            background: #43A047;
+            color: white;
+        }        
+        .panel {
+            border: 1px solid #43A047;
+        }
+        .panel-footer > p {
+            font-size: 1em;
+            line-height: 1.4em;
+        }
+        .panel-body > div > p {
+            font-size: 1.2em;
+            color:indigo;
+        }
+        .mdl-textfield {
+            width: 100%;
+        }
+        .submit { 
+            margin-top: 1em;
+            width: 100%;
+        }
+        .answer > label {
+            margin-right: 1em;
+            margin-left: 1em;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            var current="C";
+            $("#add-option").click( function(){
+                console.log("click");
+                if ($("#opt-b").val() !="" && $("#opt-a").val() && current =="C") {
+                    $("#opt-c").parent().removeClass('hidden');
+                    $("#option-C").parent().removeClass("hidden");
+                    current = "D";
+                }
+                if ($("#opt-b").val() !="" && $("#opt-a").val()!="" && current =="D" && $("#opt-c").val()!="") {
+                    $("#opt-d").parent().removeClass('hidden');
+                    $("#option-D").parent().removeClass("hidden");
+                }
+            });                     
+        });
+    </script>
+    {% endblock %}
+    {% block content %}
+    <div class="wrapper">
+        <div class="row">
+            <div class="col-md-8">
+                <div id="contribute" class="panel">
+                    <div class="panel-heading">
+                        <div class="panel-title">Question Contribute</div>
+                    </div>
+                    <div class="panel-body">
+                        <form class="" action="" method="POST">
+                            {% csrf_token %}
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <textarea row="2" name="question" class="mdl-textfield__input" value="" id="question"></textarea>
+                                <label for="question" class="mdl-textfield__label">Question</label>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input type="text" name="opt-a" class="mdl-textfield__input" value="" id="opt-a">
+                                <label for="opt-a" class="mdl-textfield__label">Option A</label>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input type="text" name="opt-b" class="mdl-textfield__input" value="" id="opt-b">
+                                <label for="opt-b" class="mdl-textfield__label">Option B</label>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label hidden">
+                                <input type="text" name="opt-c" class="mdl-textfield__input" value="" id="opt-c">
+                                <label for="opt-c" class="mdl-textfield__label">Option C</label>
+                                <div class="mdl-tooltip" for="opt-c">
+                                Leave blank if not using Option C
+                                </div>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label hidden">
+                                <input type="text" name="opt-d" class="mdl-textfield__input" value="" id="opt-d">
+                                <label for="opt-d" class="mdl-textfield__label">Option D</label>
+                                <div class="mdl-tooltip" for="opt-d">
+                                Leave blank if not using Option D
+                                </div>
+                            </div>
+                            <div class="row">
+                                <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-button--mini-fab" type="button" id="add-option">
+                                    <i class="material-icons">add</i>
+                                </button>
+                                <div class="mdl-tooltip" for="add-option">
+                                Add after all above option are filled
+                                </div>
+                            </div>
+
+                            <div class="row answer">Answer :      
+                                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-A">
+                                    <input type="radio" id="option-A" class="mdl-radio__button" name="answer" value="A" checked>
+                                    <span class="mdl-radio__label">A</span>
+                                </label>
+                                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-B">
+                                    <input type="radio" id="option-B" class="mdl-radio__button" name="answer" value="B">
+                                    <span class="mdl-radio__label">B</span>
+                                </label>
+                                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect hidden" for="option-C">
+                                    <input type="radio" id="option-C" class="mdl-radio__button" name="answer" value="C">
+                                    <span class="mdl-radio__label">C</span>
+                                </label>
+                                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect hidden" for="option-D">
+                                    <input type="radio" id="option-D" class="mdl-radio__button" name="answer" value="D">
+                                    <span class="mdl-radio__label">D</span>
+                                </label>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield">
+                                <input type="text" name="tag" class="mdl-textfield__input" id="tag" placeholder="atleast one tag such as (india,science)">
+                                <div class="mdl-tooltip" for="tag">
+                                Use commas to seprate tags.
+                                </div>
+                            </div>
+                            <div class="">
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent submit" id="submit-btn">Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="panel-footer">
+                        <p class="text-center"><b>Note : </b>Please refrain from submitting wrong questions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <script>
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        window.onload =function(){
+            var csrftoken = getCookie('csrftoken');
+            document.getElementById('csrf').value = csrftoken;
+        };
+    </script>
+    {% endblock %}

@@ -84,6 +84,21 @@ def getsocial(request):
 def contribute(request):
     return render(request,'contribute.html')
 
+
+@api_view(['GET','POST'])
+def contribute_question(request):
+    if request.method == 'GET':
+        return render(request,'question.html')
+    elif request.method == 'POST':
+        option = list(filter(lambda x: x !="",[request.data.get('opt-a'),request.data.get('opt-b'),request.data.get('opt-c'),request.data.get('opt-d')]))
+        tag = request.data.get('tag').split(',')
+        tag = [ Tag.objects.filter(name__istartswith=i)[0] if len(Tag.objects.filter(name__istartswith=i)) else None for i in tag ]
+        tag = list(filter(lambda x: x is not None,tag))
+        data = {'question':request.data.get('question'),'tag':tag,'description':'','answer':request.data.get('answer'),'option':option}
+        serializer = QuestionSerializer(data=data)
+        if serializer.is_valid():
+            print(data)
+
 class UserView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     model = User
@@ -130,6 +145,12 @@ class TagView(viewsets.ModelViewSet):
         # allow non-authenticated user to create via POST
         return (AllowAny() if self.request.method == 'GET'
                 else IsStaffOrTargetUser()),
+    @list_route(methods=['get'], url_path='search')
+    def search(self,request,name=None):
+        _tags = Tag.objects.filter(name__istartswith=name)
+        serializer = TagSerializer(_tags,many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
 
 class QuestionView(viewsets.ModelViewSet):
     serializer_class = QuestionSerializer

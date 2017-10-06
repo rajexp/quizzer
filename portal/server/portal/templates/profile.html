@@ -84,6 +84,7 @@
     <style>
         .demo-card-wide.mdl-card {
         width: 100%;
+        background: #C8E6C9;
         }
         .demo-card-wide > .mdl-card__title {
         color: #fff;
@@ -100,6 +101,13 @@
             position: relative;
             margin-top:200px;
         }
+        ul {
+            list-style: none;
+        }
+        .mdl-list__item > .mdl-list__item-primary-content:first-child {
+
+            font-weight: bold;
+            }
     </style>
     {% endblock %}
     {% block content %}
@@ -124,43 +132,43 @@
                                 <span class="mdl-list__item-primary-content">
                                 Name
                                 </span>
-                                <span class="mdl-list__item-primary-content" id="name"></span>
+                                <span class="mdl-list__item-primary-content pull-right" id="name"></span>
                             </li>
                             <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 Username
                                 </span>
-                                <span class="mdl-list__item-primary-content" id="username"></span>
+                                <span class="mdl-list__item-primary-content pull-right" id="username"></span>
                             </li>
                             <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 Email
                                 </span>
-                                <span class="mdl-list__item-primary-content" id="email"></span>
+                                <span class="mdl-list__item-primary-content pull-right" id="email"></span>
                             </li>
                             <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 Birthday
                                 </span>
-                                <span class="mdl-list__item-primary-content" id="birth"></span>
+                                <span class="mdl-list__item-primary-content pull-right" id="birth"></span>
                             </li>
                             <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 Passout
                                 </span>
-                                <span class="mdl-list__item-primary-content" id="passout"></span>
+                                <span class="mdl-list__item-primary-content pull-right" id="passout"></span>
                             </li>
                             <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 College
                                 </span>
-                                <span class="mdl-list__item-primary-content" id="college"></span>
+                                <span class="mdl-list__item-primary-content pull-right" id="college"></span>
                             </li>
                             <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 State
                                 </span>
-                                <span class="mdl-list__item-primary-content" id="state"></span>
+                                <span class="mdl-list__item-primary-content pull-right" id="state"></span>
                             </li>
                         </ul>
                     </div>

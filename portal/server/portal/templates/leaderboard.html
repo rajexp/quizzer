@@ -4,6 +4,32 @@
     ul>li{
         height: 60px;
     }
+    #container{
+        position: fixed;
+        width:100%;
+        height: 100vh;
+    }
+    .content {
+        background : #C8E6C9;
+        overflow: visible;
+        height: 100%;
+
+    }
+    .leader {
+        position: relative;
+        background: #4CAF50;
+        width: 100%;
+        border: none;
+    }
+    .leader >thead > tr> th {
+        padding-left: 1em;
+    }
+    .leader > tbody > tr> td {
+        padding-left: 1em;
+    }
+    .rank {
+        text-align: right;
+    }
 </style>
 {% endblock %}
 {% block body %}
@@ -11,28 +37,37 @@
     <div id="container">
         <div class="row">
             <div class="col-md-3"></div>
-            <div class="col-md-6">
-                <h3>LeaderBoard - {{ title }}</h3>
-                <ul class="demo-list-two mdl-list">
-                    {% for leader in leaders %}
-                    {% ifequal user.id leader.profile.user.id %}
-                    <li class="mdl-list__item mdl-list__item--two-line" style="background:skyblue;">
-                    {% else %}
-                    <li class="mdl-list__item mdl-list__item--two-line">
-                    {% endifequal %}
-                        <span class="mdl-list__item-primary-content" style="height:60px;">
-                            <a href="{% url 'profile' leader.profile.user.username %}"><img src="/static/{{ leader.profile.photo }}" style="width:50px;height:50px;border-radius:50%;"/></a>
-                            <span>{{ leader.profile.user.first_name }}&nbsp;{{ leader.profile.user.last_name}}</span>
-                        </span>
-                        <span class="mdl-list__item-secondary-content">
-                        <span class="mdl-list__item-secondary-info">Rank</span>
-                        <a class="mdl-list__item-secondary-action" href="#">{{ forloop.counter }}</a>
-                        </span>
-                    </li>
-                    {% endfor %}
-                </ul>
+            <div class="col-md-6 content">
+                <div class="row"><h3 class="text-center">LeaderBoard - {{ title }}</h3></div>
+                <div class="row">
+                    <table class="table mdl-shadow--2dp leader">
+                        <thead>
+                            <tr>
+                            <th class="mdl-data-table__cell rank">Rank</th>
+                            <th colspan="2">Name</th>
+                            <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for leader in leaders %}
+                        {% ifequal user.id leader.profile.user.id %}
+                        <tr id="YOU" class="mdl-list__item mdl-list__item--two-line" style="background:#42A5F5;">
+                        {% else %}
+                        <tr class="mdl-list__item mdl-list__item--two-line">
+                        {% endifequal %}
+                            <td class="rank"><b>{{ forloop.counter }}</b></td>
+                            <td colspan="2">
+                                <a href="{% url 'profile' leader.profile.user.username %}"><img src="/static/{{ leader.profile.photo }}" style="width:50px;height:50px;border-radius:50%;"/></a>
+                                <span>{{ leader.profile.user.first_name }}&nbsp;{{ leader.profile.user.last_name}}</span>
+                            </td>
+                            <td>{{ leader.score }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3"></div>
         </div>
     </div>
     {% endblock %}

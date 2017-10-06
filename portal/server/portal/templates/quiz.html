@@ -36,6 +36,7 @@
             text-align: center;
             background-color: skyblue;
             border-radius: 1em;
+            padding: 1em 1em 1em 1em;
         }
         #start-quiz > div {
             position: relative;
@@ -413,23 +414,23 @@
 {% block body %}
     {% block content %}
     <div id="start">
-        <div id="start-quiz" class=" row mdl-color--teal">
+        <div id="start-quiz" class=" row mdl-color--green">
             <div class="row">
-                <div class="col-md-12 text-center"><h5><b>{{ quiz.title }}&nbsp;</b></h5></div>
+                <div class="col-md-12 text-center"><h4><b>{{ quiz.title }}&nbsp;</b></h4></div>
             </div>
             <div class="row">
                 <div class="col-md-12 text-center"><em>{{ quiz.description }}</em></div>
             </div>
-            <hr>
             <div class="row">
-                <div class="col-md-6"><h6>Questions : {{ quiz.total }}</h6></div>
-                <div class="col-md-6"><h6>Time : {{ quiz.time }} min. </h6></div>
+                <div class="col-md-2"></div>
+                <div class="col-md-8"><h6 class="text-center">{{ quiz.total }} Questions | {{ quiz.time }} Minutes</h6></div>
+                <div class="col-md-2"></div>
             </div>
+            <hr>
             {% if user.is_authenticated %}
-            <div class="row"><div class="col-md-4"><img src="/static/{{ profile.photo }}" style="width:50px;height:50px;border-radius:50%;"/></div><div class="col-md-2"></div><div class="col-md-6"><span>{{ profile.user.first_name }}&nbsp;{{ profile.user.last_name}}</span></div></div>
             {% if record.attempted is True %}
             <div class="row">
-                <div class="col-md-6"><h6>SCORE</h6></div><div class="col-md-6"><h6>{{ record.record.score }}</h6></div>
+                <div class="col-md-6"><h6>Your Score</h6></div><div class="col-md-6"><h6>{{ record.record.score }}</h6></div>
             </div>
             <div class="row">
                 <div class="col-md-6">

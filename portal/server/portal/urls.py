@@ -40,7 +40,8 @@ urlpatterns = [
     url(r'^tracks/(?P<track>[0-9]+)',views.quizlist,name="quizlist"),
     url(r'^about/',views.about,name="about"),
     url(r'^social/link',views.getsocial,name="social-link"),
-    url(r'^contribute$',views.contribute,name="contribute"),
+    url(r'^contribute/$',views.contribute,name="contribute"),
+    url(r'^contribute/question$',views.contribute_question,name="contribute_question")
 ]
    
 urlpatterns += [

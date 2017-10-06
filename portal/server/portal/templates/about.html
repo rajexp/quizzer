@@ -3,17 +3,52 @@
     <style>
         .about{
             font-size:1.2em;
+            font-family: Roboto,Helvetica,Arial,sans-serif;
+            text-align: justify;
+            text-align-last: center;
+        }
+        .wrapper {
+            margin-top: 20px;
+            max-width: 978px;
+        } 
+        .section {
+            background: #C8E6C9;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+        .section-title{
+            background: #388E3C;
+            color: white;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+        .section-title > h2 {
+            padding:10px;
+        }
+        .section-content {
+            padding: 20px;
         }
     </style>
     {% endblock %}
     {% block content %}
-    <div class="container">
-        <h2 class="text-center">Quiz Up</h2>
-        <br>
-        <p class="about">Quiz Up is created as a fun application to test your knowledge in various fields in form of short and crisp questions.
-            This app is basically for make your time spent a lovely experience which helps you a lot in refreshing your knowledge extensively.
-            The main purpose of app is to be a hub of quizzers and provide a platform for enthusiast to create quiz themselves and invite others to take quiz and analyze how the people performed in the quiz.
-        </p>
-
+    <div class="row">
+        <div class="wrapper col-md-8 col-md-offset-2 col-sm-12">
+            <section class="section">
+                <div class="section__block">
+                    <div class="section-title">
+                        <h2 class="text-center">
+                        Quiz Up
+                        </h2>
+                    </div>
+                    <div class="section-content mdl-color-text--blue-900">
+                        <p class="about">Quiz Up is created as a fun application to test your knowledge in various fields in form of short and crisp questions.
+                        This app is basically for make your time spent a lovely experience which helps you a lot in refreshing your knowledge extensively.
+                        The main purpose of app is to be a hub of quizzers and provide a platform for enthusiast to create quiz themselves and invite others to take quiz and analyze how the people performed in the quiz.
+                        </p>
+                    </div>
+                </div>
+                <button class="mdl-button"
+            </section>
+        </div>
     </div>
     {% endblock %}

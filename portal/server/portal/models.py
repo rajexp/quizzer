@@ -94,6 +94,26 @@ class UserQuizRecord(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='userrecord')
     score = models.FloatField(default=0.00)
 
+class Feedback(models.Model):
+    user = models.ForeignKey(User) 
+    content = models.TextField(max_length=500)
+    created_on = models.DateTimeField(editable=False)
+
+    def __str(self):
+        return self.user + '...' + self.content[:len(self.content) if len(self.conent)<10 else 10]
+        
+    def save(self, *args, **kwargs):
+        ''' On save, update timestamps '''
+        if not self.id:
+            self.created_on = timezone.now()
+        return super(Feedback, self).save(*args, **kwargs)
+
+class Contribution(models.Model):
+    user = models.ForeignKey(User)
+    question = models.IntegerField()
+    feedback = models.IntegerField()
+    points = models.IntegerField()
+
 
 
 

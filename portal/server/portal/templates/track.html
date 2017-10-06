@@ -9,65 +9,99 @@
         body{line-height:1; font:normal 0.9em/1em "Helvetica Neue", Helvetica, Arial, sans-serif; width: 100%;} 
         ol,ul{list-style:none;}
         strong{font-weight:700;}
-        #wrapper{
-            position: relative;
-            display: flex;
+        .wrapper {
+            margin: auto;
+            margin-top: 50px;
+            max-width: 978px;
+            width:auto;
+        }
+        .mdl-card__title {
+            background: #43A047;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            -ms-flex-direction: column;
             flex-direction: column;
             align-items: center;
-            height:100vh;
+            text-align: center; 
         }
-        .track {
-            margin: auto auto;
-            position: relative;
-            width: 80%;
-            height: 100px;
+        .content__title {
+            color: #263238;
+            font-family: Lora,Helvetica,Arial,sans-serif;
+            font-size: 38px;
+            font-weight: 700;
+            margin: 0 0 15px;
+            margin-bottom: 20px;
+        }
+        .content__body {  
+            color: #263238;
+            font-size: 16px;
+            font-weight: 300;
+            line-height: 27px;
+            margin-bottom: 20px;
+        }
+        .content {
+            flex-direction: column;
+            padding: 0px;
+        }
+        .mdl-card {
+            width: 100%;
+        }
+        .mdl-card__title-text{
+            align-self: center;
+            letter-spacing: 0.2em;
+        }
+        .tracks {
+            padding: 0px;
+        }
+        .tracks > li {
+            padding:0px;
+            font-size: 24px;
+            min-height:40px;
+            line-height: 40px;
+            font-weight: 600;
             text-align: center;
-            vertical-align: middle;
-            line-height: 100px;
-            background-color: rgba(0,0,0,.5);
-            border-radius: 20px;
         }
-        .track > a {
-            height: 100%;
-            font-size: 1.3em;
-            color:azure;
+        .tracks > li > a {
+            color:black !important;
+            
         }
-        .track > a:hover {
-            text-decoration: none;
+        .tracks>li:hover,.tracks >li:hover >a {
+            background: #42A5F5;
+            color: white !important;
         }
-
-        .track:hover {
-            background:rgba(0,0,0,.7);
+        .even {
+            background: white;
         }
-        .title {
-            padding-left: 5%;
-            text-align: left;
-            color:royalblue;
-        }
-        .subtitle {
-            padding-left: 5%;
-            text-align: left;
-        }
-        .msg {  
-            font-size: 1.1em;
-            color: #8e9aa9!important;
+        .odd {
+            background: #C8E6C9;
         }
     </style>
 {% endblock %}
 {% block body %}
     {% block content %}    
-    <div class="row">
+    <div class="wrapper">
+        <!--<div class="row content mdl-color-text--white">
+            <h2 class="content__title mdl-typography--font-light"> Tracks List </h2>
+            <div class="row"><p class="content__body mdl-color-text--grey-500">Choose your tracks and take quizzes. Improve and track your day to day performance.<br><em>Creating best for tommorrow.</em></p></div>
+        </div>-->
         <div class="row">
-            <div class="row title"><h2> Tracks List </h2></div>
-            <div class="row subtitle"><p class="msg">Choose your tracks and take quizzes. Improve and track your performance day by day. Learn more and more with Quizzers.<br><em>Creating best for tommorrow.</em></p></div>
-        </div>
-        <div class="row">
-            <div class="col-md-6" id="wrapper">
-            {% for track in tracks %}
-            <div class="row track"><a href="{% url 'quizlist' track.id %}">{{ track.name }}</a></div>
-            {% endfor %}
+            <div class="col-md-8">
+                <div class="mdl-card mdl-shadow--2dp content">
+                    <div class="mdl-card__title">
+                        <h2 class="mdl-card__title-text mdl-color-text--white">
+                        Tracks List
+                        </h2>
+                    </div>
+                    <ul class="mdl-list tracks">
+                        {% for track in tracks %}
+                        <li class="mdl-list__item {% cycle 'odd' 'even'%}">
+                        <a href="{% url 'quizlist' track.id %}">{{ track.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-            <div class="col-md-6"></div>
         </div>
     </div>
     {% endblock %}
