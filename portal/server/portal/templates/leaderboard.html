@@ -45,7 +45,7 @@
                             <tr>
                             <th class="mdl-data-table__cell rank">Rank</th>
                             <th colspan="2">Name</th>
-                            <th>Score</th>
+                            <th>{% ifequal title 'Contributors' %}Points{% else %}Score{% endifequal %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,7 +60,7 @@
                                 <a href="{% url 'profile' leader.profile.user.username %}"><img src="/static/{{ leader.profile.photo }}" style="width:50px;height:50px;border-radius:50%;"/></a>
                                 <span>{{ leader.profile.user.first_name }}&nbsp;{{ leader.profile.user.last_name}}</span>
                             </td>
-                            <td>{{ leader.score }}</td>
+                            <td>{% if leader.score %}{{ leader.score }}{% else %}{{ leader.points }}{% endif %}</td>
                         </tr>
                         {% endfor %}
                         </tbody>

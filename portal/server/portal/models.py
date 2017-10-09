@@ -110,9 +110,18 @@ class Feedback(models.Model):
 
 class Contribution(models.Model):
     user = models.ForeignKey(User)
-    question = models.IntegerField()
-    feedback = models.IntegerField()
-    points = models.IntegerField()
+    question = models.IntegerField(default=0)
+    feedback = models.IntegerField(default=0)
+    points = models.IntegerField(default=0)
+    modified_on = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        ''' On save, update timestamps '''
+        self.modified_on = timezone.now()
+        return super(Contribution, self).save(*args, **kwargs)
+        
+    def __str(self):
+        return self.user+'_'+self.points
 
 
 

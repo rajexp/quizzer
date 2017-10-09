@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
-from .models import Track, Tag, Question, Quiz, UserProfile, UserQuizRecord
+from .models import Track, Tag, Question, Quiz, UserProfile, UserQuizRecord, Contribution, Feedback
  
  
 class UserSerializer(serializers.ModelSerializer):
@@ -131,6 +131,7 @@ class UserQuizRecordSerializer(serializers.ModelSerializer):
     def to_representation(self, obj):
         rep = super(UserQuizRecordSerializer, self).to_representation(obj)
         rep['profile'] = UserProfileSerializer(UserProfile.objects.get(user=obj.user)).data
+        rep['quiz'] = QuizSerializer(Quiz.objects.get(id=rep['quiz'])).data
         return rep
 
     class Meta:
@@ -142,3 +143,19 @@ class UserQuizRecordSerializer(serializers.ModelSerializer):
                 fields = ('user','quiz')
             )
         ]
+
+class ContributionSerializer(serializers.ModelSerializer):
+    def to_representation(self, obj):
+        rep = super(ContributionSerializer, self).to_representation(obj)
+        rep['profile'] = UserProfileSerializer(UserProfile.objects.get(user=obj.user)).data
+        return rep
+    class Meta:
+        model = Contribution
+        fields = ('id','user','question','feedback','points','modified_on')
+        read_only_fields = ('id','modified_on')
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ('id','user','content','created_on')
+        read_only_fields = ('id','created_on')

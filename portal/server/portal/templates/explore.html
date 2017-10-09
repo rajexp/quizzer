@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block extra_head %}
+
+    
+    <style type="text/css" media="all">
+        /*css reset */
+        html,body,div,span,p,code,small,strike,strong,sub,sup,b,u,i{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0;} 
+        article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block;} 
+        body{line-height:1; font:normal 0.9em/1em "Helvetica Neue", Helvetica, Arial, sans-serif; width: 100%;} 
+        ol,ul{list-style:none;}
+        strong{font-weight:700;}
+        .wrapper {
+            margin: auto;
+            margin-top: 50px;
+            max-width: 978px;
+            width:auto;
+        }
+        .wrapper > div {
+            margin-bottom: 2em;
+        }
+        .mdl-card__title {
+            background: #43A047;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            align-items: center;
+            text-align: center; 
+        }
+        .content__title {
+            color: #263238;
+            font-family: Lora,Helvetica,Arial,sans-serif;
+            font-size: 38px;
+            font-weight: 700;
+            margin: 0 0 15px;
+            margin-bottom: 20px;
+        }
+        .content__body {  
+            color: #263238;
+            font-size: 16px;
+            font-weight: 300;
+            line-height: 27px;
+            margin-bottom: 20px;
+        }
+        .content {
+            flex-direction: column;
+            padding: 0px;
+        }
+        .mdl-card {
+            width: 100%;
+        }
+        .mdl-card__title-text{
+            align-self: left;
+        }
+        .title {
+            padding: 1em;
+            padding-left: 0.5em;
+        }
+        .tracks {
+            padding: 0px;
+        }
+        .tracks > li {
+            padding:0px;
+            font-size: 24px;
+            min-height:40px;
+            line-height: 40px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .tracks > li > a {
+            color:black !important;
+            
+        }
+        .tracks>li:hover,.tracks >li:hover >a {
+            background: #42A5F5;
+            color: white !important;
+        }
+        .even {
+            background: white;
+        }
+        .odd {
+            background: #C8E6C9;
+        }
+        .videos-container {
+            position: relative;
+            height: auto;
+            width: 99%;
+            margin: 2px auto;
+            background: #abefcd;
+            text-align: left;
+            white-space: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            vertical-align:middle;
+            scroll-behavior: hidden;
+            }
+        .videos-container > iframe {
+            display: inline-block;
+            width: 300px;
+            height: 200px;
+            margin: 0.5em;
+            padding: 3px;
+            white-space: normal;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    {% block content %}    
+    <div class="wrapper">
+        <!--<div class="row content mdl-color-text--white">
+            <h2 class="content__title mdl-typography--font-light"> Tracks List </h2>
+            <div class="row"><p class="content__body mdl-color-text--grey-500">Choose your tracks and take quizzes. Improve and track your day to day performance.<br><em>Creating best for tommorrow.</em></p></div>
+        </div>-->
+        <div class="row title">
+            <div class="col-md-12">
+                <h2>Explore Material for Topics</h2>
+                <p><em>This sections gives references to the best of the avaliable material on internet from where you can study the particular topics and excel in the field</em></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="mdl-card mdl-shadow--2dp content">
+                    <div class="mdl-card__title">
+                        <h2 class="mdl-card__title-text mdl-color-text--white">
+                        Economics
+                        </h2>
+                    </div>
+                    <ol class="">
+                        <li><a href="http://www.sscadda.com/p/economics-notes.html" target="_blank">SSC ADDA Economics Notes</a></li>
+                        <li><a href="http://www.sscadda.com/p/economics-notes.html" target="_blank">SSC ADDA Economics Notes</a></li>
+                        <li><a href="http://www.sscadda.com/p/economics-notes.html" target="_blank">SSC ADDA Economics Notes</a></li>
+                    </ol>
+                </div>
+                <div class="row videos-container">
+                    <iframe width="300" height="200" src="https://www.youtube.com/embed/u7H177Hg0Zk" frameborder="0" allowfullscreen></iframe><iframe width="300" height="200" src="https://www.youtube.com/embed/7ynMav6yIzQ?start=20" frameborder="0" allowfullscreen></iframe>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/Ma4l3euQXbI?start=20" frameborder="0" allowfullscreen></iframe>    
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="mdl-card mdl-shadow--2dp content">
+                    <div class="mdl-card__title">
+                        <h2 class="mdl-card__title-text mdl-color-text--white">
+                        Algebra
+                        </h2>
+                    </div>
+                    <ol class="">
+                        <li><a href="http://www.sscadda.com/p/economics-notes.html" target="_blank">SSC ADDA Economics Notes</a></li>
+                        <li><a href="http://www.sscadda.com/p/economics-notes.html" target="_blank">SSC ADDA Economics Notes</a></li>
+                        <li><a href="http://www.sscadda.com/p/economics-notes.html" target="_blank">SSC ADDA Economics Notes</a></li>
+                    </ol>
+                </div>
+                <div class="row videos-container">
+                    <iframe width="300" height="200" src="https://www.youtube.com/embed/u7H177Hg0Zk" frameborder="0" allowfullscreen></iframe><iframe width="300" height="200" src="https://www.youtube.com/embed/7ynMav6yIzQ?start=20" frameborder="0" allowfullscreen></iframe>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/Ma4l3euQXbI?start=20" frameborder="0" allowfullscreen></iframe>    
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+{% endblock %}

@@ -41,6 +41,8 @@ urlpatterns = [
     url(r'^about/',views.about,name="about"),
     url(r'^social/link',views.getsocial,name="social-link"),
     url(r'^contribute/$',views.contribute,name="contribute"),
+    url(r'^explore/$',views.explore,name="explore"),
+    url(r'^contributors/$',views.contributors,name="contributors"),
     url(r'^contribute/question$',views.contribute_question,name="contribute_question")
 ]
    

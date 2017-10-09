@@ -158,6 +158,7 @@ SOCIALACCOUNT_PROVIDERS =  {'facebook':
         'id',
         'email',
         'name',
+        'gender',
         'first_name',
         'last_name',
         'friends'],

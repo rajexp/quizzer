@@ -44,6 +44,10 @@
         .link {
             width: 100%;
         }
+        .url-link {
+            font-weight: 900;
+            color: darkblue;
+        }
     </style>
     {% endblock %}
     {% block content %}
@@ -62,6 +66,10 @@
                             <a href="{% url 'contribute_question' %}"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent link">Question</button></a>
                             <a href="#"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent link">Feedback </button></a>
                         </div>
+                        <br>
+                        <div class="row"><h5>Get to Know</h5></div>
+                        <hr align="center" width="50%" style=" margin:auto; padding-bottom:1em;" >
+                        <div class="row"><a class="url-link" href="{% url 'contributors' %}?type=top">Top Contributors</a><a class="url-link" href="{% url 'contributors' %}?type=latest">Latest Contributors</a><a class="url-link" href="{% url 'contributors' %}?type=all">Community</a></div>
                     </div>
                     <div class="panel-footer">
                         <p class="text-center"><b>Note : </b>Contributing to QuizUp will unlock new Quizzes and material to practice exclusively for you.<br> Earn points with each contribution and some other exciting feature.<br>Till then enjoy the quizzes and let us know how much you <span id="heart">&#10084;</span> QuizUp.</p>
@@ -69,6 +77,5 @@
                 </div>
             </div>
         </div>
-      </div>
     </div>
     {% endblock %}

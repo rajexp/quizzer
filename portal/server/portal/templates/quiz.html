@@ -9,7 +9,7 @@
             position: relative;
             margin-top:5%;
             padding-left: 5%;
-            height: 100vh;
+            height: 100%;
         }
         #start{
             position: fixed;
@@ -37,6 +37,7 @@
             background-color: skyblue;
             border-radius: 1em;
             padding: 1em 1em 1em 1em;
+            overflow: visible;
         }
         #start-quiz > div {
             position: relative;
@@ -165,6 +166,9 @@
         }
         tr> td:last-child{
             text-align: right;
+        }
+        .action {
+            width: 100%;
         }
     </style>
     <script>
@@ -414,7 +418,7 @@
 {% block body %}
     {% block content %}
     <div id="start">
-        <div id="start-quiz" class=" row mdl-color--green">
+        <div id="start-quiz" class="row mdl-color--green">
             <div class="row">
                 <div class="col-md-12 text-center"><h4><b>{{ quiz.title }}&nbsp;</b></h4></div>
             </div>
@@ -457,14 +461,13 @@
             </div>
             {% endif %}
         </div>
-        
     </div>
     <div id ="quiz" class="quiz-hidden">
         <div class="row status-bar"><div class="col-md-9"><h5>{{ quiz.title}}</h5></div><div class="col-md-3" style="float:right;">{% if not record.attempted %}<span style="color:black;" id="time-label">Time Left&nbsp;:&nbsp;</span><span id="time"></span>{% endif %}</div></div>
         <div class="row" id="wrapper">
             <div class="row">
                 <div class="col-md-6">
-                {% for i in quiz.question %}
+                    {% for i in quiz.question %}
                     <div class="panel panel-info" id="{{ i.id }}">
                         <div class="panel-heading"><div class="panel-title"><div class="row"><div class="col-md-9">Que. {{ forloop.counter }}</div><div class="col-md-3 question-status"></div></div></div></div>
                         <div class="panel-body">
@@ -476,16 +479,17 @@
                             </div>
                         </div>
                     </div>
-                {% endfor %}
-                {% if record.attempted %}
-                <div class="row">
-                    <a href="{% url 'leaderboard' quiz.id %}"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">LEADERBOARD</button></a>
+                    {% endfor %}
+                    {% if record.attempted %}
+                    <div class="row">
+                        <a href="{% url 'leaderboard' quiz.id %}"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent action">LEADERBOARD</button></a>
+                    </div>
+                    {% else %}
+                    <div class="row">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent action" id="submit-quiz">Submit</button>
+                    </div>
+                    {% endif %}
                 </div>
-                {% else %}
-                <div class="row">
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="submit-quiz">Submit</button></div>
-                </div>
-                {% endif %}
                 <div class="col-md-6"></div>
             </div>
         </div>

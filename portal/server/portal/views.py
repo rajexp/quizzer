@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.db.models import Q 
+from django.db.models import Q, F
 from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import detail_route, list_route
@@ -9,8 +9,8 @@ from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from .permissions import IsStaffOrTargetUser, IsAdminOrIsSelf
 from .serializers import TrackSerializer, TagSerializer, QuizSerializer, \
-QuestionSerializer, UserSerializer, UserProfileSerializer, UserQuizRecordSerializer
-from .models import Track, Tag, Question, Quiz, UserProfile, UserQuizRecord
+QuestionSerializer, UserSerializer, UserProfileSerializer, UserQuizRecordSerializer, ContributionSerializer, FeedbackSerializer
+from .models import Track, Tag, Question, Quiz, UserProfile, UserQuizRecord, Contribution, Feedback
 from allauth.socialaccount.models import SocialAccount
 from django.conf import settings
 from django.db.models.signals import post_save
@@ -26,12 +26,34 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
 
+def explore(request):
+    return render(request,'explore.html')
+def contributors(request):
+    _type = request.GET.get('type','')
+    if _type == 'latest':
+        _contributors = Contribution.objects.all().order_by('-modified_on')    
+    elif _type == 'top':
+        _contributors = Contribution.objects.all().order_by('-points')
+    else:
+        _contributors = Contribution.objects.all()
+    serializer = ContributionSerializer(_contributors,many=True)
+    return render(request,'leaderboard.html',context={'title':'Contributors','leaders':serializer.data})
 # @api_view(['GET','POST'])
 def profile(request,user):
     user = User.objects.get(username=user)
     _profile = UserProfile.objects.get(user=user)
-    profile = UserProfileSerializer(_profile)
-    return render(request,'profile.html',context={'profile':profile.data})
+    profile = UserProfileSerializer(_profile).data
+    try:
+        _user_records = UserQuizRecord.objects.filter(user=user)
+        user_records = UserQuizRecordSerializer(_user_records,many=True).data
+    except UserQuizRecord.DoesNotExist:
+        user_records = None
+    try:
+        _user_contribution = Contribution.objects.get(user=user)
+        user_contribution = ContributionSerializer(_user_contribution).data
+    except Contribution.DoesNotExist:
+        user_contribution = None
+    return render(request,'profile.html',context={'profile':profile,'user_records':user_records,'contribution':user_contribution})
 
 def quiz(request,quiz=None):
     _quiz = Quiz.objects.get(id=quiz)
@@ -92,13 +114,20 @@ def contribute_question(request):
     elif request.method == 'POST':
         option = list(filter(lambda x: x !="",[request.data.get('opt-a'),request.data.get('opt-b'),request.data.get('opt-c'),request.data.get('opt-d')]))
         tag = request.data.get('tag').split(',')
-        tag = [ Tag.objects.filter(name__istartswith=i)[0] if len(Tag.objects.filter(name__istartswith=i)) else None for i in tag ]
+        tag = [ Tag.objects.filter(name__istartswith=i.strip())[0] if len(Tag.objects.filter(name__istartswith=i.strip())) else None for i in tag ]
         tag = list(filter(lambda x: x is not None,tag))
         data = {'question':request.data.get('question'),'tag':tag,'description':'','answer':request.data.get('answer'),'option':option}
         serializer = QuestionSerializer(data=data)
         if serializer.is_valid():
-            print(data)
-
+            serializer.save()
+            contributor,_ = Contribution.objects.get_or_create(user=request.user)
+            question = contributor.question
+            contributor.question = F('question')+1
+            contributor.points = F('points')+1
+            contributor.save()
+            contributor = Contribution.objects.get(user=request.user)
+            serializer = ContributionSerializer(contributor)
+            return redirect('/profile/@'+request.user.username)
 class UserView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     model = User
@@ -147,7 +176,7 @@ class TagView(viewsets.ModelViewSet):
                 else IsStaffOrTargetUser()),
     @list_route(methods=['get'], url_path='search')
     def search(self,request,name=None):
-        _tags = Tag.objects.filter(name__istartswith=name)
+        _tags = Tag.objects.filter(name__istartswith=name.strip())
         serializer = TagSerializer(_tags,many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
         

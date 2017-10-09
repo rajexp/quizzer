@@ -82,9 +82,9 @@
         });
     </script>
     <style>
-        .demo-card-wide.mdl-card {
+        .mdl-card {
         width: 100%;
-        background: #C8E6C9;
+        background: #BBDEFB;
         }
         .demo-card-wide > .mdl-card__title {
         color: #fff;
@@ -108,10 +108,26 @@
 
             font-weight: bold;
             }
+        .centered {
+            margin: 0 auto;
+        }
+        .title {
+            background: #2196F3;
+        }
+        .content {
+            background: #BBDEFB;
+        }
+        .leader {
+            position: relative;
+            width: 100%;
+            border: none;
+        }
+        .container { 
+            margin-top: 20px;
+        }
     </style>
     {% endblock %}
     {% block content %}
-    <p></p>
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -181,8 +197,80 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6"></div>
+            
+            <div class="col-md-5 col-md-offset-1">
+                {% if contribution %}
+                <div class="row">
+                    <div class="mdl-card mdl-shadow--2dp content">
+                        <div class="mdl-card__title title">
+                            <h3 class="centered">Contributions</h3>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <div class="row">
+                                <div class="mdl-card__supporting-text">
+                                    <ul class="demo-list-item mdl-list">
+                                        <li class="mdl-list__item">
+                                            <span class="mdl-list__item-primary-content">
+                                            Questions
+                                            </span>
+                                            <span class="mdl-list__item-primary-content pull-right">{{ contribution.question}}</span>
+                                        </li>
+                                        <li class="mdl-list__item">
+                                            <span class="mdl-list__item-primary-content">
+                                            Feedback
+                                            </span>
+                                            <span class="mdl-list__item-primary-content pull-right">{{ contribution.feedback}}</span>
+                                        </li><li class="mdl-list__item">
+                                            <span class="mdl-list__item-primary-content">
+                                            Points
+                                            </span>
+                                            <span class="mdl-list__item-primary-content pull-right">{{ contribution.points}}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>                    
+                        </div>
+                    </div>
+                </div>
+                <br>
+                {% else %}
+                {% endif %}
+                <div class="row">
+                    <div class="mdl-card mdl-shadow--2dp content">
+                        <div class="mdl-card__title title">
+                            <h3 class="centered">Quiz Performances</h3>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <div class="row">
+                                <table class="table leader">
+                                    <thead>
+                                        <tr>
+                                        <th class="mdl-data-table__cell">Quiz</th>
+                                        <th colspan="2">Description</th>
+                                        <th>Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for record in user_records %}
+                                        <tr class="mdl-list__item mdl-list__item--two-line">
+                                            <td>
+                                                <a href="{% url 'quiz' record.quiz.id  %}">
+                                                    <b>{{ record.quiz.title }}</b>
+                                                </a>
+                                            </td>
+                                            <td colspan="2">
+                                                <span>{{ record.quiz.description }}</span>
+                                            </td>
+                                            <td>{{ record.score }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>        
+                            </div>
+                        </div>                    
+                    </div>
+                </div>
+            </div>
         </div>
-        
     </div>
     {% endblock %}
