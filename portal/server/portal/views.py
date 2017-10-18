@@ -26,6 +26,18 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
 
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def add_social_friends(sender, instance=None, created=False, **kwargs):
+    try:
+        account = SocialAccount.objects.get(user=instance)
+    except:
+        return False
+    for user in list(account.extra_data['friends']['data']):
+        friend_account = SocialAccount.objects.get(uid=user['id'])
+        friend_account.extra_data['friends']['data'].append({'id':account.uid,'name':account.extra_data['name']})
+        friend_account.save()
+    return True
+    
 def explore(request):
     return render(request,'explore.html')
 def contributors(request):
