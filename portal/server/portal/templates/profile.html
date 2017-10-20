@@ -23,16 +23,19 @@
             dataType:'json',
             success:function(data){
                 user  = data;
+                {% if user.is_authenticated %}
+                {% ifequal user.id profile.user.id %}
                 $.ajax({
                 url:'/api/userprofile/myprofile/',
                 method:'GET',
                 dataType:'json',
                 success:function(data2){
                     user.profile  = data2;
-                    console.log(user);
                     init();
                 } 
                 });
+                {% endifequal %}
+                {% endif %}
             } 
             });
             // Cookie for post request
@@ -62,7 +65,6 @@
             data:{'user':profile.user.id},
             dataType:'json',
             success:function(data){
-                console.log(data);
                 if( data.fb_uid ) {
                     if(document.getElementById("title_profile").style.backgroundImage==null | document.getElementById("title_profile").style.backgroundImage==""){
                         document.getElementById("title_profile").style.backgroundImage="url('http://graph.facebook.com/v2.2/"+data.fb_uid+"/picture?width=450&height=350')";
@@ -143,6 +145,9 @@
                         </ul>
                     </div>
                     <div class="mdl-card__supporting-text">
+
+                        {% if user.is_authenticated %}
+                        {% ifequal user.id profile.user.id %}
                         <ul class="demo-list-item mdl-list">
                             <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
@@ -187,6 +192,8 @@
                                 <span class="mdl-list__item-primary-content pull-right" id="state"></span>-->
                             </li>
                         </ul>
+                        {% endifequal %}
+                        {% endif %}
                     </div>
                     <div class="mdl-card__actions mdl-card--border">
                     </div>

@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
+from allauth.socialaccount.models import SocialAccount
+
 from .models import Track, Tag, Question, Quiz, UserProfile, UserQuizRecord, Contribution, Feedback
  
  
@@ -43,6 +45,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def to_representation(self, obj):
         rep = super(UserProfileSerializer, self).to_representation(obj)
         rep['user'] = UserSerializer(obj.user).data
+        try:
+            _social_account = SocialAccount.objects.get(user = obj.user)
+            rep['social_site'] = _social_account.provider
+            rep['social_id']= _social_account.uid
+        except:
+            pass
         for field in self.fields:
             try:
                 if rep[field] is None:

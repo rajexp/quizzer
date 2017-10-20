@@ -71,7 +71,15 @@
                         {% endifequal %}
                             <td class="rank"><b>{{ forloop.counter }}</b></td>
                             <td colspan="2">
-                                <a href="{% url 'profile' leader.profile.user.username %}"><img src="/static/{{ leader.profile.photo }}" style="width:50px;height:50px;border-radius:50%;"/></a>
+                                <a href="{% url 'profile' leader.profile.user.username %}">
+                                    {% if leader.profile.photo %}
+                                    <img src="/static/{{ leader.profile.photo }}" style="width:50px;height:50px;border-radius:50%;"/>
+                                    {% else %}
+                                    {% ifequal leader.profile.social_site 'facebook' %}
+                                    <img src="http://graph.facebook.com/v2.2/{{ leader.profile.social_id }}/picture?width=50&height=50" style="width:50px;height:50px;border-radius:50%;"/>                                    
+                                    {% endifequal %}
+                                    {% endif %}
+                            </a>
                                 <span>{{ leader.profile.user.first_name }}&nbsp;{{ leader.profile.user.last_name}}</span>
                             </td>
                             <td>{% if leader.score %}{{ leader.score }}{% else %}{{ leader.points }}{% endif %}</td>

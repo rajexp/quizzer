@@ -176,7 +176,7 @@ class UserView(viewsets.ModelViewSet):
  
     def get_permissions(self):
         # allow non-authenticated user to create via POST
-        return (AllowAny() if self.request.method =='POST'
+        return (AllowAny() if self.request.method  in ['GET', 'POST']
                 else IsStaffOrTargetUser()),
 
 class UserProfileView(viewsets.ModelViewSet):
@@ -186,7 +186,7 @@ class UserProfileView(viewsets.ModelViewSet):
  
     def get_permissions(self):
         # allow non-authenticated user to create via POST
-        return (AllowAny() if self.request.method =='POST'
+        return (AllowAny() if self.request.method in ['GET', 'POST']
                 else IsStaffOrTargetUser()),
     
     @list_route(methods=['get'], url_path='myprofile')
