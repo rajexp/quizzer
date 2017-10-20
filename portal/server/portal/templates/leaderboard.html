@@ -39,6 +39,20 @@
             <div class="col-md-3"></div>
             <div class="col-md-6 content">
                 <div class="row"><h3 class="text-center">LeaderBoard - {{ title }}</h3></div>
+                <div class="row padded">
+                    {% ifequal type 'all' %}
+                    <div class="col-md-6"><button type="button" class="btn btn-block btn-success" id="all">All</button></div>
+                    {% if request.user.is_authenticated %}
+                    <div class="col-md-6"><button type="button" class="btn btn-block btn-primary" id="friends">Friends</button></div>
+                    {% endif %}
+                    {% else %}
+                    <div class="col-md-6"><button type="button" class="btn btn-block btn-primary" id="all">All</button></div>
+                    {% if request.user.is_authenticated %}
+                    <div class="col-md-6"><button type="button" class="btn btn-block btn-success" id="friends">Friends</button></div>
+                    {% endif %}
+                    {% endifequal %}
+                </div>
+                
                 <div class="row">
                     <table class="table mdl-shadow--2dp leader">
                         <thead>
@@ -71,4 +85,13 @@
         </div>
     </div>
     {% endblock %}
+    <script>
+    $('#all').click(function(){
+        window.location.href = location.protocol+'//'+location.host+location.pathname+'?type=all';
+    });
+
+    $('#friends').click(function(){
+        window.location.href = location.protocol+'//'+location.host+location.pathname+'?type=friends';
+    })
+    </script>
 {% endblock %}

@@ -37,19 +37,41 @@ def add_social_friends(sender, instance=None, created=False, **kwargs):
         friend_account.extra_data['friends']['data'].append({'id':account.uid,'name':account.extra_data['name']})
         friend_account.save()
     return True
-    
+
+def get_friends_list(user_id):
+    user = User.objects.get(id=user_id)
+    friends = list()
+    try:
+        social_account = SocialAccount.objects.get(user=user)
+        for _friend in social_account.extra_data['friends']['data']:
+            friend = SocialAccount.objects.get(uid=_friend['id']).user
+            friends.append(friend)
+    except:
+        pass
+    return friends 
+
+
+def home(request):
+    return render(request,'home.html')
+
 def explore(request):
     return render(request,'explore.html')
+
 def contributors(request):
-    _type = request.GET.get('type','')
-    if _type == 'latest':
+    _filter = request.GET.get('filter','')
+    if _filter == 'latest':
         _contributors = Contribution.objects.all().order_by('-modified_on')    
-    elif _type == 'top':
+    elif _filter == 'top':
         _contributors = Contribution.objects.all().order_by('-points')
     else:
         _contributors = Contribution.objects.all()
+    _type = request.GET.get('type',None)
+    if _type=='friends':
+        friends = get_friends_list(request.user.id)
+        friends.append(request.user)
+        _contributors = _contributors.filter(user__in=friends)
     serializer = ContributionSerializer(_contributors,many=True)
-    return render(request,'leaderboard.html',context={'title':'Contributors','leaders':serializer.data})
+    return render(request,'leaderboard.html',context={'title':'Contributors','leaders':serializer.data,'type':_type})
 # @api_view(['GET','POST'])
 def profile(request,user):
     user = User.objects.get(username=user)
@@ -96,11 +118,18 @@ def quizlist(request,track=None):
     return render(request,'quizlist.html',context={'quizs':quizzes.data})
 
 def leaderboard(request,quiz=None):
+    _type = request.GET.get('type',None)
     _quiz = Quiz.objects.get(id = quiz)
-    _quizrecord = UserQuizRecord.objects.filter(quiz=_quiz).order_by('-score')
+    _quizrecord = UserQuizRecord.objects.filter(quiz=_quiz).order_by('-score')    
+    if request.GET.get('type',None)=='friends':
+        friends = get_friends_list(request.user.id)
+        friends.append(request.user)
+        _quizrecord = _quizrecord.filter(user__in=friends)
     quizrecord = UserQuizRecordSerializer(_quizrecord,many=True)
-    return render(request,'leaderboard.html',context={"leaders":quizrecord.data, "title":_quiz.title})
+    return render(request,'leaderboard.html',context={"leaders":quizrecord.data, "title":_quiz.title,"type":_type})
 
+
+    
 
 def about(request):
     return render(request,'about.html')

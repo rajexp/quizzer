@@ -14,8 +14,7 @@
                 document.getElementById("college").innerHTML = (profile.college);
                 document.getElementById("state").innerHTML = (profile.state)?profile.state:'';
                 document.getElementById("passout").innerHTML = (profile.passout)?profile.passout:'';
-                console.log(profile.photo);
-                if(profile.photo!=null)
+                if(profile.photo!=null && profile.photo!='')
                 document.getElementById("title_profile").style.backgroundImage="url('/static"+profile.photo+"')";
             }
             $.ajax({
@@ -63,9 +62,10 @@
             data:{'user':profile.user.id},
             dataType:'json',
             success:function(data){
+                console.log(data);
                 if( data.fb_uid ) {
                     if(document.getElementById("title_profile").style.backgroundImage==null | document.getElementById("title_profile").style.backgroundImage==""){
-                        document.getElementById("title_profile").style.backgroundImage="url('http://graph.facebook.com/"+data.fb_uid+"/picture?width=250&height=250')";
+                        document.getElementById("title_profile").style.backgroundImage="url('http://graph.facebook.com/v2.2/"+data.fb_uid+"/picture?width=450&height=350')";
                     }
                     document.getElementById("social_link").href="https://www.facebook.com/"+data.fb_uid;
                 }
@@ -162,7 +162,7 @@
                                 </span>
                                 <span class="mdl-list__item-primary-content pull-right" id="email"></span>
                             </li>
-                            <li class="mdl-list__item">
+                            <!--<li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 Birthday
                                 </span>
@@ -184,7 +184,7 @@
                                 <span class="mdl-list__item-primary-content">
                                 State
                                 </span>
-                                <span class="mdl-list__item-primary-content pull-right" id="state"></span>
+                                <span class="mdl-list__item-primary-content pull-right" id="state"></span>-->
                             </li>
                         </ul>
                     </div>
@@ -211,6 +211,12 @@
                                     <ul class="demo-list-item mdl-list">
                                         <li class="mdl-list__item">
                                             <span class="mdl-list__item-primary-content">
+                                            Points
+                                            </span>
+                                            <span class="mdl-list__item-primary-content pull-right">{{ contribution.points}}</span>
+                                        </li>
+                                        <li class="mdl-list__item">
+                                            <span class="mdl-list__item-primary-content">
                                             Questions
                                             </span>
                                             <span class="mdl-list__item-primary-content pull-right">{{ contribution.question}}</span>
@@ -220,11 +226,6 @@
                                             Feedback
                                             </span>
                                             <span class="mdl-list__item-primary-content pull-right">{{ contribution.feedback}}</span>
-                                        </li><li class="mdl-list__item">
-                                            <span class="mdl-list__item-primary-content">
-                                            Points
-                                            </span>
-                                            <span class="mdl-list__item-primary-content pull-right">{{ contribution.points}}</span>
                                         </li>
                                     </ul>
                                 </div>
