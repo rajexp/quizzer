@@ -13,10 +13,40 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
-from django.conf import settings
-from django.conf.urls.static import static
+from django.views.generic import TemplateView
+from rest_framework import routers
+from . import views
+from rest_framework.authtoken import views as rviews
+admin.autodiscover()
+router = routers.DefaultRouter()
+router.register(r'accounts', views.UserView, 'list')
+router.register(r'tracks', viewset=views.TrackView)
+router.register(r'tags', viewset=views.TagView)
+router.register(r'questions', viewset=views.QuestionView)
+router.register(r'quizzes', viewset=views.QuizView)
+router.register(r'users', viewset=views.UserView)
+router.register(r'userprofile', viewset=views.UserProfileView)
+router.register(r'userquizrecord',viewset=views.UserQuizRecordView)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    url(r'^$',views.home,name='home'),    
+    url(r'^accounts/', include('allauth.urls')),
+    url(r'^api/', include(router.urls)),
+    url(r'^profile/@(?P<user>[a-zA-Z0-9]+)',views.profile, name='profile'),
+    url(r'^quiz/(?P<quiz>[0-9]+)$',views.quiz,name="quiz"),
+    url(r'^quiz/(?P<quiz>[0-9]+)/leaderboard',views.leaderboard,name="leaderboard"),
+    url(r'^tracks/$',views.tracks,name="tracks"),
+    url(r'^tracks/(?P<track>[0-9]+)',views.quizlist,name="quizlist"),
+    url(r'^about/',views.about,name="about"),
+    url(r'^social/link',views.getsocial,name="social-link"),
+    url(r'^contribute/$',views.contribute,name="contribute"),
+    url(r'^explore/$',views.explore,name="explore"),
+    url(r'^contributors/$',views.contributors,name="contributors"),
+    url(r'^contribute/question$',views.contribute_question,name="contribute_question")
+]
+   
+urlpatterns += [
+    url(r'^api-token-auth/', rviews.obtain_auth_token)
+]
