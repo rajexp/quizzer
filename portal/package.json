@@ -1,8 +1,0 @@
-{
-    "name": "portal",
-    "devDependencies": {
-        "coffee-script": "",
-        "grunt": "",
-        "grunt-contrib-coffee": ""
-    }
-}
