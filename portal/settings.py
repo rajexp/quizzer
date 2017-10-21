@@ -110,10 +110,10 @@ WSGI_APPLICATION = 'portal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'quizdb',
-        'USER': 'makov',
-        # 'PASSWORD': 'mypassword',
-        'HOST': '',
+        'NAME': 'df62c9ifa56afs',
+        'USER': 'bxakdpgzzgfqxh',
+        'PASSWORD': 'Pknp0IMv6Cdc6_bjxjp2DLSQ6e',
+        'HOST': 'postgres://bxakdpgzzgfqxh:Pknp0IMv6Cdc6_bjxjp2DLSQ6e@ec2-54-227-240-164.compute-1.amazonaws.com:5432/df62c9ifa56afs',
         'PORT': '5432',
     }
 }
@@ -152,7 +152,7 @@ ACCOUNT_USERNAME_REQUIRED = True
 
 SOCIALACCOUNT_PROVIDERS =  {'facebook':
    {'METHOD': 'oauth2',
-    'SCOPE': ['email', 'public_profile', 'user_friends'],
+    'SCOPE': ['email', 'public_profile', 'user_friends','publish_actions','user_birthday'],
     'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
     'FIELDS': [
         'id',

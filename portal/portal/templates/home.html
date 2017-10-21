@@ -76,10 +76,13 @@
                 <p class="lead">We assist you in satisfying your hunger for knowledge with complete fun. Our visuals path and social engagement makes this process more fun and innovative.</p>
             </div>
             </div>
+            {% if request.user.is_authenticated %}
+            {% else %}
             <div class="row text-center center">
                 <h4>
                 <a href="/accounts/login" class="btn btn-lg btn-block btn-success">Login</a></h4>
             </div>
+            {% endif %}
         </div>
         </section>
 

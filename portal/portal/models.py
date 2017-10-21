@@ -100,7 +100,7 @@ class Feedback(models.Model):
     created_on = models.DateTimeField(editable=False)
 
     def __str(self):
-        return self.user + '...' + self.content[:len(self.content) if len(self.conent)<10 else 10]
+        return self.user + '...' + self.content[:len(self.content) if len(self.content)<10 else 10]
         
     def save(self, *args, **kwargs):
         ''' On save, update timestamps '''
@@ -123,8 +123,63 @@ class Contribution(models.Model):
     def __str(self):
         return self.user+'_'+self.points
 
+# 'BIRTHDAY','CONTEST','TRENDING','QUIZ','CHALLENGE','POINTS','FOLLOW','NEW_CONTENT'
+class Notification(models.Model):
+    category = models.CharField(max_length=20,choices=(('BIRTHDAY','BIRTHDAY'), ('CONTEST','CONTEST'), ('TRENDING','TRENDING'), ('QUIZ','QUIZ'), ('CHALLENGE','CHALLENGE'), ('POINTS','POINTS'), ('FOLLOW','FOLLOW'), ('NEW_CONTENT','NEW_CONTENT'), ('UNLOCK','UNLOCK')))
+    user = models.ForeignKey(User)
+    name = models.CharField(max_length=50)
+    id_first = models.CharField(max_length=100)
+    time = models.DateTimeField(default=timezone.now)
+    score = models.CharField(max_length=10)
+    name_second = models.CharField(max_length=50)
+    id_second = models.CharField(max_length=100)
+    created_on  = models.DateTimeField(editable=False)
 
+    def save(self, *args, **kwargs):
+        ''' On save, update timestamps '''
+        if not self.id:
+            self.created_on = timezone.now()
+        return super(Notification, self).save(*args, **kwargs)
 
+# {
+#     'name':'Day 1 Classic', //CONTEST
+#     'id':'13411',
+#     'time':'12/01/23:9:00:45',
+# }
+# {
+#     'name':'India Quiz I', //TRENDING
+#     'id':'23423',
+# }
+# {   
+#     'name':'Some Quiz', //QUIZ
+#     'id':'23413',
+#     'score':'90',
+# }
+# {
+#     'name':'SOme User', //CHALLENGE
+#     'id':'8741345',
+#     'state':'Win/Lost',
+#     'quiz':'India Quiz I',
+#     'id': '875385'
+# }
+# {
+#     'name':'India Quiz I', //POINTS
+#     'id':'8741345',
+#     'score':'10'
+# }
+# {
+#     'name':'General Quiz', //FOLLOW
+#     'id':'8741345',
+# }
+# {
+#     'name':'India Quiz I', //NEW_CONTENT
+#     'id':'8741345',
+#     'type':'Quiz/Feature'
+# }
+# {
+#     'name':'Create Quiz', //UNLOCK
+#     'id':'8741345'
+# }
 
 
 
