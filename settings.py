@@ -110,10 +110,10 @@ WSGI_APPLICATION = 'portal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'df62c9ifa56afs',
-        'USER': 'bxakdpgzzgfqxh',
-        'PASSWORD': 'Pknp0IMv6Cdc6_bjxjp2DLSQ6e',
-        'HOST': 'postgres://bxakdpgzzgfqxh:Pknp0IMv6Cdc6_bjxjp2DLSQ6e@ec2-54-227-240-164.compute-1.amazonaws.com:5432/df62c9ifa56afs',
+        'NAME': 'da4duj87j6pqgg',
+        'USER': 'oulmgjaizeeuer',
+        'PASSWORD': 'c18748e81e2942f87317000adc671b708425b9ffd12c94376f66b549d9ddb231',
+        'HOST': 'postgres://oulmgjaizeeuer:c18748e81e2942f87317000adc671b708425b9ffd12c94376f66b549d9ddb231@ec2-54-225-88-199.compute-1.amazonaws.com:5432/da4duj87j6pqgg',
         'PORT': '5432',
     }
 }
