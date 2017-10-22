@@ -44,8 +44,11 @@ def get_friends_list(user_id):
     try:
         social_account = SocialAccount.objects.get(user=user)
         for _friend in social_account.extra_data['friends']['data']:
-            friend = SocialAccount.objects.get(uid=_friend['id']).user
-            friends.append(friend)
+            try:
+                friend = SocialAccount.objects.get(uid=_friend['id']).user
+                friends.append(friend)
+            except:
+                pass
     except:
         pass
     return friends 
