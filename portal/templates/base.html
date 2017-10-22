@@ -92,10 +92,10 @@
                 for="demo-menu-lower-right-large">
               {% if user.is_authenticated%}
               <a href="{% url 'profile'  user.username %}"><li class="mdl-menu__item"><i class="material-icons">account_circle</i><span class="link">&nbsp;Profile</span></li></a>
-              <a href="/accounts/social/connections/"><li class="mdl-menu__item"><i class="material-icons">settings</i><span class="link">&nbsp;Settings</span></li>
-              <a href="/accounts/logout/"><li class="mdl-menu__item"><span class="link">Logout</span></li></a>
+              <a href="/account/social/connections/"><li class="mdl-menu__item"><i class="material-icons">settings</i><span class="link">&nbsp;Settings</span></li>
+              <a href="/account/logout/"><li class="mdl-menu__item"><span class="link">Logout</span></li></a>
               {% else %}
-              <a href="/accounts/login/"><li class="mdl-menu__item"><i class="material-icons">account_circle</i><span class="link">&nbsp;Login</span></li></a>
+              <a href="/account/login/"><li class="mdl-menu__item"><i class="material-icons">account_circle</i><span class="link">&nbsp;Login</span></li></a>
               {% endif %}
               
             </ul>
@@ -109,10 +109,10 @@
                 for="demo-menu-lower-right-small">
               {% if user.is_authenticated%}
               <a href="{% url 'profile'  user.username %}"><li class="mdl-menu__item"><i class="material-icons">account_circle</i>Profile</li></a>
-              <a href="/accounts/social/connections/"><li class="mdl-menu__item"><i class="material-icons">settings</i><span class="link">Settings</span></li>
-              <a href="/accounts/logout/"><li class="mdl-menu__item"><span class="link">Logout</span></li></a>
+              <a href="/account/social/connections/"><li class="mdl-menu__item"><i class="material-icons">settings</i><span class="link">Settings</span></li>
+              <a href="/account/logout/"><li class="mdl-menu__item"><span class="link">Logout</span></li></a>
               {% else %}
-              <a href="/accounts/login/"><li class="mdl-menu__item"><i class="material-icons">account_circle</i><span class="link">Login</span></li></a>
+              <a href="/account/login/"><li class="mdl-menu__item"><i class="material-icons">account_circle</i><span class="link">Login</span></li></a>
               {% endif %}
               
             </ul>
