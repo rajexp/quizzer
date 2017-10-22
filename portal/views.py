@@ -33,9 +33,12 @@ def add_social_friends(sender, instance=None, created=False, **kwargs):
     except:
         return False
     for user in list(account.extra_data['friends']['data']):
-        friend_account = SocialAccount.objects.get(uid=user['id'])
-        friend_account.extra_data['friends']['data'].append({'id':account.uid,'name':account.extra_data['name']})
-        friend_account.save()
+        try:
+            friend_account = SocialAccount.objects.get(uid=user['id'])
+            friend_account.extra_data['friends']['data'].append({'id':account.uid,'name':account.extra_data['name']})
+            friend_account.save()
+        except:
+            pass
     return True
 
 def get_friends_list(user_id):
