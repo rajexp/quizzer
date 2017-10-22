@@ -32,7 +32,7 @@ router.register(r'userquizrecord',viewset=views.UserQuizRecordView)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$',views.home,name='home'),    
-    url(r'^accounts/', include('allauth.urls')),
+    url(r'^account/', include('allauth.urls')),
     url(r'^api/', include(router.urls)),
     url(r'^profile/@(?P<user>[a-zA-Z0-9]+)',views.profile, name='profile'),
     url(r'^quiz/(?P<quiz>[0-9]+)$',views.quiz,name="quiz"),

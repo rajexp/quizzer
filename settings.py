@@ -67,8 +67,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'portal','templates'),
-            os.path.join(BASE_DIR,'portal','templates','allauth'), #, 'plain', 'example'
+            os.path.join(BASE_DIR, 'gate','portal','templates'),
+            os.path.join(BASE_DIR, 'gate','portal','templates','allauth'),
+            os.path.join(BASE_DIR, 'gate','portal','templates','allauth','account'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -135,7 +136,7 @@ ACCOUNT_ADAPTER = 'portal.allauthsetting.AccountAdapter'
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
-LOGIN_URL = 'accounts/login'
+LOGIN_URL = 'account/login'
 LOGIN_REDIRECT_URL = 'profile/'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = LOGIN_URL
