@@ -11,9 +11,11 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import inspect
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 # Quick-start development settings - unsuitable for production
@@ -67,9 +69,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'gate','portal','templates'),
-            os.path.join(BASE_DIR, 'gate','portal','templates','allauth'),
-            os.path.join(BASE_DIR, 'gate','portal','templates','allauth','account'),
+            os.path.join(PROJECT_DIR, 'portal','templates'),
+            os.path.join(PROJECT_DIR, 'portal','templates','allauth'),
+            os.path.join(PROJECT_DIR, 'portal','templates','allauth','account'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
