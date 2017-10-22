@@ -50,6 +50,8 @@ def get_friends_list(user_id):
         pass
     return friends 
 
+def terms(request):
+    return render(request,'terms.html')
 
 def home(request):
     return render(request,'home.html')
