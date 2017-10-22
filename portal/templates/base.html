@@ -74,7 +74,7 @@
         <div class="mdl-layout__header-row">
           <!-- Title -->
           <a  class="brand" href="/"><span class="mdl-layout-title pull-left">Quiz Social</span>&nbsp;&nbsp;&nbsp;
-          <!--<div class="fb-like pull-right" data-href="https://www.facebook.com/Quizzers-1483206825094034/" data-layout="button_count" data-action="like" data-size="large" data-show-faces="true" data-share="false"></div>-->
+          <div class="fb-like pull-right" data-href="https://www.facebook.com/Quizzers-1483206825094034/" data-layout="button_count" data-action="like" data-size="large" data-show-faces="true" data-share="false"></div>
           </a>
           <!-- Add spacer, to align navigation to the right -->
           <div class="mdl-layout-spacer"></div>
@@ -148,5 +148,13 @@
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     {% block extra_body %}
     {% endblock %}
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=1887774814879852';
+    fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
   </body>
 </html>
