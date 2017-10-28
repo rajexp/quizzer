@@ -15,9 +15,9 @@ class Tag(models.Model):
 class Question(models.Model):
     question = models.TextField(blank=False, null=False)
     question_image = models.ImageField(blank=True, null=True, upload_to='question')
-    option = ArrayField(models.CharField(max_length=50, blank=False, null=False),size=4)
+    option = ArrayField(models.CharField(max_length=250, blank=False, null=False),size=4)
     answer = models.IntegerField(choices=((1,'1'),(2,'2'),(3,'3'),(4,'4')))
-    description = models.TextField(blank=True,null=True )
+    description = models.TextField(blank=True,null=True)
     tag = models.ManyToManyField(Tag)
     created_on  = models.DateTimeField(default= timezone.now)
 
@@ -89,6 +89,9 @@ class UserTrack(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     tracks = models.ForeignKey(Track, related_name='usertrack')
 
+    def __str__(self):
+        return self.user.first_name+' '+self.user.last_name+' : '+self.tracks.name
+
 class UserQuizRecord(models.Model):
     user = models.ForeignKey(User)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='userrecord')
@@ -140,6 +143,14 @@ class Notification(models.Model):
         if not self.id:
             self.created_on = timezone.now()
         return super(Notification, self).save(*args, **kwargs)
+
+class Contest(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(null=True,blank=True)
+    quiz = models.ForeignKey(Quiz)
+    datetime = models.DateTimeField(default=timezone.now)
+    published = models.BooleanField(default=False)
+
 
 # {
 #     'name':'Day 1 Classic', //CONTEST

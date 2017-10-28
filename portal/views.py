@@ -20,7 +20,8 @@ from rest_framework.decorators import api_view
 from django.core import serializers
 import random
 import json
-
+from quizautomate import populate_quiz
+from .forms import QuestionsForm
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
@@ -54,8 +55,22 @@ def get_friends_list(user_id):
                 pass
     except:
         pass
-    return friends 
+    return friends
 
+def contests(request):
+    pass    
+
+def quiz_automate(request):
+    if request.method=='GET':
+        form = QuestionsForm()
+        return render(request,'form.html',{'form':form})
+    if request.method=='POST':
+        form = QuestionsForm()
+        if request.user.is_authenticated and request.user.is_superuser:        
+            populate_quiz(request.POST.get('url'),request.POST.get('tag'))
+            return render(request,'form.html',{'form':form,'message':"Successfully Done"})
+        return render(request,'form.html',{'form':form,'message':'You aren\'t authorized for this task.'})
+            
 def terms(request):
     return render(request,'terms.html')
 
@@ -136,8 +151,6 @@ def leaderboard(request,quiz=None):
     quizrecord = UserQuizRecordSerializer(_quizrecord,many=True)
     return render(request,'leaderboard.html',context={"leaders":quizrecord.data, "title":_quiz.title,"type":_type})
 
-
-    
 
 def about(request):
     return render(request,'about.html')

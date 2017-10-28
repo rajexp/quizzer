@@ -46,6 +46,8 @@ urlpatterns = [
     url(r'^contributors/$',views.contributors,name="contributors"),
     url(r'^contribute/question$',views.contribute_question,name="contribute_question"),
     url(r'^terms/$',views.terms,name="terms"),
+    url(r'^automate/$',views.quiz_automate,name="questionsubmit"),
+    url(r'^contests/$',views.contests,name="contests"),  
 ]
    
 urlpatterns += [

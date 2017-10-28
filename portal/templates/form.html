@@ -1,0 +1,31 @@
+{% extends "./base.html" %}
+{% load crispy_forms_tags %}
+{% block head_title %} Quiz - Automate{% endblock %}
+{% block head %}
+<style>
+    .success {
+        border: 2px solid green;
+    }
+</style>
+{%  endblock %}
+{% block body %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-sm-12 col-md-6 ">
+            <div class="container-fluid">
+                {% if title %}
+                <h2 class="text-center text-primary">{{ title }}</h2>
+                {% endif %}
+                    {% crispy form form.helper %}
+                    {% if message %}
+                    <br>
+                    <p>{{ message }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% endblock %}

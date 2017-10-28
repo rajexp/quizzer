@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block head_title %}Contests{% endblock %}
+{% block extra_head %}
+
+    
+    <style type="text/css" media="all">
+        /*css reset */
+        html,body,div,span,p,code,small,strike,strong,sub,sup,b,u,i{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0;} 
+        article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block;} 
+        body{line-height:1; font:normal 0.9em/1em "Helvetica Neue", Helvetica, Arial, sans-serif; width: 100%;} 
+        ol,ul{list-style:none;}
+        strong{font-weight:700;}
+        .wrapper {
+            margin: auto;
+            margin-top: 50px;
+            max-width: 978px;
+            width:auto;
+        }
+        .mdl-card__title {
+            background: #43A047;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            align-items: center;
+            text-align: center; 
+        }
+        .content__title {
+            color: #263238;
+            font-family: Lora,Helvetica,Arial,sans-serif;
+            font-size: 38px;
+            font-weight: 700;
+            margin: 0 0 15px;
+            margin-bottom: 20px;
+        }
+        .content__body {  
+            color: #263238;
+            font-size: 16px;
+            font-weight: 300;
+            line-height: 27px;
+            margin-bottom: 20px;
+        }
+        .content {
+            flex-direction: column;
+            padding: 0px;
+        }
+        .mdl-card {
+            width: 100%;
+        }
+        .mdl-card__title-text{
+            align-self: center;
+            letter-spacing: 0.2em;
+        }
+        .tracks {
+            padding: 0px;
+        }
+        .tracks > li {
+            padding:0px;
+            font-size: 24px;
+            min-height:40px;
+            line-height: 40px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .tracks > li > a {
+            color:black !important;
+            
+        }
+        .tracks>li:hover,.tracks >li:hover >a {
+            background: #42A5F5;
+            color: white !important;
+        }
+        .even {
+            background: white;
+        }
+        .odd {
+            background: #C8E6C9;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    {% block content %}    
+    <div class="wrapper">
+        <!--<div class="row content mdl-color-text--white">
+            <h2 class="content__title mdl-typography--font-light"> Tracks List </h2>
+            <div class="row"><p class="content__body mdl-color-text--grey-500">Choose your tracks and take quizzes. Improve and track your day to day performance.<br><em>Creating best for tommorrow.</em></p></div>
+        </div>-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mdl-card mdl-shadow--2dp content">
+                    <div class="mdl-card__title">
+                        <h2 class="mdl-card__title-text mdl-color-text--white">
+                        Contests
+                        </h2>
+                    </div>
+                    <ul class="mdl-list tracks">
+                        {% if contests %}
+                        {% for contest in contests %}
+                        <li class="mdl-list__item {% cycle 'odd' 'even'%}">
+                        <a href="{% url 'quiz' contest.quiz %}">{{ contest.title }}</a>
+                        </li>
+                        {% endfor %}
+                        {% else %}
+                        <li> No contest running right now</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+{% endblock %}

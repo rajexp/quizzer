@@ -85,6 +85,7 @@
           <!-- Navigation. We hide it in small screens. -->
           <nav class="mdl-navigation mdl-layout--large-screen-only">
             <a class="mdl-navigation__link mdl-typography--text-uppercase mdl-color-text--white" href="{% url 'tracks' %}">Take Quiz</a>
+            <!--<a class="mdl-navigation__link mdl-typography--text-uppercase mdl-color-text--white" href="{% url 'contests' %}">Contests</a>-->
             <a class="mdl-navigation__link mdl-typography--text-uppercase mdl-color-text--white" href="{% url 'explore' %}">Explore</a>
             <a class="mdl-navigation__link mdl-typography--text-uppercase mdl-color-text--white" href="{% url 'contribute' %}">Contribute</a>
             <a class="mdl-navigation__link mdl-typography--text-uppercase mdl-color-text--white" href="{% url 'about' %}">About Us</a>
@@ -127,8 +128,9 @@
         <span class="mdl-layout-title">Quiz Social</span>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" href="{% url 'tracks' %}">Take Quiz</a>
+          <!--<a class="mdl-navigation__link" href="{% url 'contests' %}">Contests</a>-->
           <a class="mdl-navigation__link" href="{% url 'explore' %}">Explore</a>
-            <a class="mdl-navigation__link" href="{% url 'contribute' %}">Contribute</a>
+          <a class="mdl-navigation__link" href="{% url 'contribute' %}">Contribute</a>
           <a class="mdl-navigation__link" href="{% url 'about' %}">About Us</a>
         </nav>
       </div>
